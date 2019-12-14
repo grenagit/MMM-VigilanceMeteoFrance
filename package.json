@@ -1,0 +1,27 @@
+{
+  "name": "MMM-VigilanceMeteoFrance",
+  "version": "0.1.0",
+  "description": "Module for a Magic Mirror device display the current level of vigilance of weather phenomena in metropolitan france.",
+  "main": "MMM-VigilanceMeteoFrance.js",
+  "author": "Grena",
+  "license": "MIT",
+  "dependencies": {
+    "request": "^2.88.0",
+    "xml2js": "^0.4.22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grenagit/MMM-VigilanceMeteoFrance.git"
+  },
+  "keywords": [
+    "vigilance",
+    "weather phenomena",
+    "météo france",
+    "france",
+    "risks",
+    "storm",
+    "water",
+    "rise",
+    "snow"
+  ]
+}

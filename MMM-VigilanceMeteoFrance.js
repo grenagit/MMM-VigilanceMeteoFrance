@@ -1,0 +1,227 @@
+/* Magic Mirror
+ * Module: MMM-VigilanceMeteoFrance
+ *
+ * Magic Mirror By Michael Teeuw https://magicmirror.builders
+ * MIT Licensed.
+ *
+ * Module MMM-VigilanceMeteoFrance By Grena https://github.com/grenagit
+ * MIT Licensed.
+ */
+
+Module.register("MMM-VigilanceMeteoFrance",{
+
+	// Default module config
+	defaults: {
+		department: 0,
+		updateInterval: 1 * 60 * 60 * 1000, // every 1 hour
+		animationSpeed: 1000, // 1 second
+		maxTextWidth: 0,
+		showDescription: false,
+		showRiskLegend: true,
+		useColorLegend: true,
+
+		initialLoadDelay: 0, // 0 seconds delay
+		retryDelay: 2500, // 2,5 seconds
+
+		apiBase: "http://www.vigilance.meteofrance.com/",
+		vigiEndpoint: "data/NXFR33_LFPW_.xml"
+	},
+
+	// Define required scripts
+	getStyles: function() {
+		return ["MMM-VigilanceMeteoFrance.css", "font-awesome.css"];
+	},
+
+
+	// Define start sequence
+	start: function() {
+		Log.info("Starting module: " + this.name);
+
+		this.vigiWeatherLevel = null;
+		this.vigiWeatherTitle = null;
+		this.vigiWeatherDescription = null;
+		this.vigiWeatherColor = null;
+		this.vigiWeatherRisks = [];
+		this.vigiWeatherRisksLegend = [];
+		this.vigiWeatherRisksIcon = [];
+		this.loaded = false;
+		this.scheduleUpdate(this.config.initialLoadDelay);
+	},
+
+	// Override dom generator
+	getDom: function() {
+		var wrapper = document.createElement("div");
+
+		if (!this.config.department) {
+			wrapper.innerHTML = "Please set the vigilance <i>department</i> in the config for module: " + this.name + ".";
+			wrapper.className = "dimmed light small";
+			return wrapper;
+		}
+
+		if (!this.loaded) {
+			wrapper.innerHTML = this.translate("LOADING");
+			wrapper.className = "dimmed light small";
+			return wrapper;
+		}
+
+		var medium = document.createElement("div");
+		medium.className = "normal medium title";
+
+		var weatherIcon = document.createElement('span');
+
+		weatherIcon.className = "fas fa-exclamation-circle dimmed";
+		if (this.config.useColorLegend) {
+			weatherIcon.style = "color: " + this.vigiWeatherColor + ";";
+		}
+		medium.appendChild(weatherIcon);
+
+		var weatherText = document.createElement("span");
+		weatherText.innerHTML = " " + this.vigiWeatherTitle;
+		medium.appendChild(weatherText);
+
+		wrapper.appendChild(medium);
+
+		if (this.config.showDescription) {
+			var weatherDescription = document.createElement('div');
+			weatherDescription.className = "light small description";
+
+			if (this.config.maxTextWidth != 0) {
+				weatherDescription.style = "max-width: " + this.config.maxTextWidth + "px;";
+			}
+			weatherDescription.innerHTML = this.vigiWeatherDescription;
+
+			wrapper.appendChild(weatherDescription);
+		}
+
+		if (this.vigiWeatherRisks) {
+			var risks = document.createElement("div");
+			risks.className = "normal small";
+
+			for (let i = 0; i < this.vigiWeatherRisks.length; i++) {
+				if (i > 0) {
+			 		var spacer = document.createElement("span");
+					spacer.innerHTML = "&nbsp;&nbsp;&nbsp;";
+					risks.appendChild(spacer);
+				}
+
+				var risksIcon = document.createElement('span');
+				risksIcon.className = "fas fa-" + this.vigiWeatherRisksIcon[i];
+				risks.appendChild(risksIcon);
+
+				var risksText = document.createElement("span");
+				risksText.className = "dimmed light";
+				if (this.config.showRiskLegend) {
+					risksText.innerHTML = " " + this.vigiWeatherRisksLegend[i];
+				}
+				risks.appendChild(risksText);
+			}
+
+			wrapper.appendChild(risks);
+		}
+
+		return wrapper;
+	},
+
+	// Request new data from vigilance.weatherfrance.com with node_helper
+	socketNotificationReceived: function(notification, payload) {
+		if (notification === "STARTED") {
+			this.updateDom(this.config.animationSpeed);
+		} else if (notification === "DATA") {
+			this.processVigi(JSON.parse(payload));
+		}
+	},
+
+	// Use the received data to set the various values before update DOM
+	processVigi: function(data) {
+		if (!data || data.department != this.config.department || !data.level || typeof data.risks === "undefined") {
+			Log.error(this.name + ": Do not receive usable data.");
+			return;
+		}
+
+		this.vigiWeatherLevel = data.level;
+		switch (data.level) {
+			case 1:
+				this.vigiWeatherTitle = "Vigilance verte";
+				this.vigiWeatherDescription = "Pas de vigilance particulière.";
+				this.vigiWeatherColor = "green";
+				break;
+			case 2:
+				this.vigiWeatherTitle = "Vigilance jaune";
+				this.vigiWeatherDescription = "Soyer attentif si vous pratiquez des activités sensibles au risque météorologique.";
+				this.vigiWeatherColor = "yellow";
+				break;
+			case 3:
+				this.vigiWeatherTitle = "Vigilance orange";
+				this.vigiWeatherDescription = "Soyez très vigilant, des phénomènes dangereux sont prévus.";
+				this.vigiWeatherColor = "orange";
+				break;
+			case 4:
+				this.vigiWeatherTitle = "Vigilance rouge";
+				this.vigiWeatherDescription = "Une vigilance absolue s'impose, des phénomènes dangereux d'intensité exceptionnelle sont prévus.";
+				this.vigiWeatherColor = "red";
+				break;
+		}
+
+		if (data.risks.length > 0) {
+			this.vigiWeatherRisks = data.risks;
+
+			for (let i = 0; i < data.risks.length; i++) {
+				switch (data.risks[i]) {
+					case 1:
+						this.vigiWeatherRisksLegend.push("Vent");
+						this.vigiWeatherRisksIcon.push("wind");
+						break;
+					case 2:
+						this.vigiWeatherRisksLegend.push("Pluie-Inondation");
+						this.vigiWeatherRisksIcon.push("cloud-showers-heavy");
+						break;
+					case 3:
+						this.vigiWeatherRisksLegend.push("Orages");
+						this.vigiWeatherRisksIcon.push("poo-storm");
+						break;
+					case 4:
+						this.vigiWeatherRisksLegend.push("Inondation");
+						this.vigiWeatherRisksIcon.push("water");
+						break;
+					case 5:
+						this.vigiWeatherRisksLegend.push("Neige");
+						this.vigiWeatherRisksIcon.push("snowflake");
+						break;
+					case 6:
+						this.vigiWeatherRisksLegend.push("Canicule");
+						this.vigiWeatherRisksIcon.push("thermometer-full");
+						break;
+					case 7:
+						this.vigiWeatherRisksLegend.push("Grand Froid");
+						this.vigiWeatherRisksIcon.push("thermometer-empty");
+						break;
+					case 8:
+						this.vigiWeatherRisksLegend.push("Avalanches");
+						this.vigiWeatherRisksIcon.push("mountain");
+						break;
+					case 9:
+						this.vigiWeatherRisksLegend.push("Vagues-Submersion");
+						this.vigiWeatherRisksIcon.push("water");
+						break;
+				}
+			}
+		}
+
+		this.loaded = true;
+		this.updateDom(this.config.animationSpeed);
+	},
+
+	// Schedule next update
+	scheduleUpdate: function(delay) {
+		var nextLoad = this.config.updateInterval;
+		if (typeof delay !== "undefined" && delay >= 0) {
+			nextLoad = delay;
+		}
+
+		var self = this;
+		setTimeout(function() {
+			self.sendSocketNotification('CONFIG', self.config);
+		}, nextLoad);
+	},
+
+});
