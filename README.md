@@ -4,9 +4,9 @@ This module displays the current level of vigilance of weather phenomena set by 
 Description, Risk legend and Color Legend display may be enabled or disabled independently. The max-width of the description can be fixed. 
 
 <p align="left">
-<img alt="MMM-VigilanceMeteoFrance Screenshot #1" src="MMM-VigilanceMeteoFrance_screenshot1.png" align="top" height="92px">
-<img alt="MMM-VigilanceMeteoFrance Screenshot #2" src="MMM-VigilanceMeteoFrance_screenshot2.png" align="top" height="209px">
-<img alt="MMM-VigilanceMeteoFrance Screenshot #3" src="MMM-VigilanceMeteoFrance_screenshot3.png" align="top" height="121px">
+<img alt="MMM-VigilanceMeteoFrance Screenshot #1" src="MMM-VigilanceMeteoFrance_screenshot1.png" align="top" height="73px">
+<img alt="MMM-VigilanceMeteoFrance Screenshot #2" src="MMM-VigilanceMeteoFrance_screenshot2.png" align="top" height="148px">
+<img alt="MMM-VigilanceMeteoFrance Screenshot #3" src="MMM-VigilanceMeteoFrance_screenshot3.png" align="top" height="97px">
 </p>
 
 [MagicMirror Project on Github](https://github.com/MichMich/MagicMirror) | [Vigilance on Météo France](http://www.vigilance.meteofrance.com/)
