@@ -30,23 +30,29 @@ module.exports = NodeHelper.create({
 			if (!error && response.statusCode === 200) {
 				parseXML(body, function (error, result) {
 						let data = result.CV.DV;
+						let risks = [];
+						let level = 1;
 
 						for (let i = 0; i < data.length; i++) {
-							if (data[i].$.dep == self.config.department) {
-								let risks = [];
+							if (data[i].$.dep == self.config.department || data[i].$.dep == (self.config.department + "10")) {
 								if(data[i].risque) {
 									for (let j = 0; j < data[i].risque.length; j++) {
-										risks.push(parseInt(data[i].risque[j].$.val));
+										risks.push({"id": parseInt(data[i].risque[j].$.val), "level": parseInt(data[i].$.coul)});
+										if(data[i].$.coul > level) {
+											level = parseInt(data[i].$.coul);
+										}
 									}
 								}
-
-								self.sendSocketNotification("DATA", JSON.stringify({
-									"department": parseInt(data[i].$.dep),
-									"level": parseInt(data[i].$.coul),
-									"risks": risks
-								}));
 							}
 						}
+
+						risks.sort((a, b) => Number(b.level) - Number(a.level));
+
+						self.sendSocketNotification("DATA", JSON.stringify({
+							"department": self.config.department,
+							"level": level,
+							"risks": risks
+						}));
 				});
 			}
 		});

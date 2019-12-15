@@ -85,7 +85,7 @@ The following properties can be configured:
 
 ### Todo
 
-- [ ] Manage risks at different levels in the same department.
+- [x] Manage risks at different levels in the same department.
 - [ ] Display an notification at the start of the MagicMirror in case of vigilance level 2 to 4.
 - [ ] Display an notification in case of new risk.
 

@@ -40,8 +40,8 @@ Module.register("MMM-VigilanceMeteoFrance",{
 		this.vigiWeatherLevel = null;
 		this.vigiWeatherTitle = null;
 		this.vigiWeatherDescription = null;
-		this.vigiWeatherColor = null;
 		this.vigiWeatherRisks = [];
+		this.vigiWeatherRisksLevel = [];
 		this.vigiWeatherRisksLegend = [];
 		this.vigiWeatherRisksIcon = [];
 		this.loaded = false;
@@ -51,6 +51,10 @@ Module.register("MMM-VigilanceMeteoFrance",{
 	// Override dom generator
 	getDom: function() {
 		var wrapper = document.createElement("div");
+
+		if (this.config.maxTextWidth != 0) {
+			wrapper.style = "max-width: " + this.config.maxTextWidth + "px;";
+		}
 
 		if (!this.config.department) {
 			wrapper.innerHTML = "Please set the vigilance <i>department</i> in the config for module: " + this.name + ".";
@@ -71,9 +75,13 @@ Module.register("MMM-VigilanceMeteoFrance",{
 
 		weatherIcon.className = "fas fa-exclamation-circle dimmed";
 		if (this.config.useColorLegend) {
-			weatherIcon.style = "color: " + this.vigiWeatherColor + ";";
+			weatherIcon.style = "color: " + this.level2color(this.vigiWeatherLevel) + ";";
 		}
 		medium.appendChild(weatherIcon);
+
+		var spacer = document.createElement("span");
+		spacer.innerHTML = "&nbsp;";
+		medium.appendChild(spacer);
 
 		var weatherText = document.createElement("span");
 		weatherText.innerHTML = " " + this.vigiWeatherTitle;
@@ -85,9 +93,6 @@ Module.register("MMM-VigilanceMeteoFrance",{
 			var weatherDescription = document.createElement('div');
 			weatherDescription.className = "light small description";
 
-			if (this.config.maxTextWidth != 0) {
-				weatherDescription.style = "max-width: " + this.config.maxTextWidth + "px;";
-			}
 			weatherDescription.innerHTML = this.vigiWeatherDescription;
 
 			wrapper.appendChild(weatherDescription);
@@ -106,14 +111,17 @@ Module.register("MMM-VigilanceMeteoFrance",{
 
 				var risksIcon = document.createElement('span');
 				risksIcon.className = "fas fa-" + this.vigiWeatherRisksIcon[i];
+				if (this.config.useColorLegend) {
+					risksIcon.style = "color: " + this.level2color(this.vigiWeatherRisksLevel[i]) + ";";
+				}
 				risks.appendChild(risksIcon);
 
-				var risksText = document.createElement("span");
-				risksText.className = "dimmed light";
 				if (this.config.showRiskLegend) {
-					risksText.innerHTML = " " + this.vigiWeatherRisksLegend[i];
+					var risksText = document.createElement("span");
+					risksText.className = "dimmed light";
+					risksText.innerHTML = "&nbsp;" + this.vigiWeatherRisksLegend[i];
+					risks.appendChild(risksText);
 				}
-				risks.appendChild(risksText);
 			}
 
 			wrapper.appendChild(risks);
@@ -163,10 +171,11 @@ Module.register("MMM-VigilanceMeteoFrance",{
 		}
 
 		if (data.risks.length > 0) {
-			this.vigiWeatherRisks = data.risks;
-
 			for (let i = 0; i < data.risks.length; i++) {
-				switch (data.risks[i]) {
+				this.vigiWeatherRisks.push(data.risks[i].id);
+				this.vigiWeatherRisksLevel.push(data.risks[i].level);
+
+				switch (data.risks[i].id) {
 					case 1:
 						this.vigiWeatherRisksLegend.push("Vent");
 						this.vigiWeatherRisksIcon.push("wind");
@@ -223,5 +232,23 @@ Module.register("MMM-VigilanceMeteoFrance",{
 			self.sendSocketNotification('CONFIG', self.config);
 		}, nextLoad);
 	},
+
+	// Convert vigilance's level to color
+	level2color: function(level) {
+		switch (level) {
+			case 1:
+				return "#007b3d";
+				break;
+			case 2:
+				return "#fff419";
+				break;
+			case 3:
+				return "#ee750c";
+				break;
+			case 4:
+				return "#b30000";
+				break;
+		}
+	}
 
 });
