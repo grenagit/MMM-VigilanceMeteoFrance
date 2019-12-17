@@ -21,7 +21,6 @@ Module.register("MMM-VigilanceMeteoFrance",{
 		useColorLegend: true,
 
 		initialLoadDelay: 0, // 0 seconds delay
-		retryDelay: 2500, // 2,5 seconds
 
 		apiBase: "http://www.vigilance.meteofrance.com/",
 		vigiEndpoint: "data/NXFR33_LFPW_.xml"
@@ -45,6 +44,7 @@ Module.register("MMM-VigilanceMeteoFrance",{
 		this.vigiWeatherRisksLegend = [];
 		this.vigiWeatherRisksIcon = [];
 		this.loaded = false;
+
 		this.scheduleUpdate(this.config.initialLoadDelay);
 	},
 
@@ -170,47 +170,52 @@ Module.register("MMM-VigilanceMeteoFrance",{
 				break;
 		}
 
+		this.vigiWeatherRisks = [];
+		this.vigiWeatherRisksLevel = [];
+		this.vigiWeatherRisksLegend = [];
+		this.vigiWeatherRisksIcon = [];
+
 		if (data.risks.length > 0) {
 			for (let i = 0; i < data.risks.length; i++) {
-				this.vigiWeatherRisks.push(data.risks[i].id);
-				this.vigiWeatherRisksLevel.push(data.risks[i].level);
+				this.vigiWeatherRisks[i] = data.risks[i].id;
+				this.vigiWeatherRisksLevel[i] = data.risks[i].level;
 
 				switch (data.risks[i].id) {
 					case 1:
-						this.vigiWeatherRisksLegend.push("Vent");
-						this.vigiWeatherRisksIcon.push("wind");
+						this.vigiWeatherRisksLegend[i] = "Vent";
+						this.vigiWeatherRisksIcon[i] = "wind";
 						break;
 					case 2:
-						this.vigiWeatherRisksLegend.push("Pluie-Inondation");
-						this.vigiWeatherRisksIcon.push("cloud-showers-heavy");
+						this.vigiWeatherRisksLegend[i] = "Pluie-Inondation";
+						this.vigiWeatherRisksIcon[i] = "cloud-showers-heavy";
 						break;
 					case 3:
-						this.vigiWeatherRisksLegend.push("Orages");
-						this.vigiWeatherRisksIcon.push("poo-storm");
+						this.vigiWeatherRisksLegend[i] = "Orages";
+						this.vigiWeatherRisksIcon[i] = "poo-storm";
 						break;
 					case 4:
-						this.vigiWeatherRisksLegend.push("Inondation");
-						this.vigiWeatherRisksIcon.push("water");
+						this.vigiWeatherRisksLegend[i] = "Inondation";
+						this.vigiWeatherRisksIcon[i] = "water";
 						break;
 					case 5:
-						this.vigiWeatherRisksLegend.push("Neige");
-						this.vigiWeatherRisksIcon.push("snowflake");
+						this.vigiWeatherRisksLegend[i] = "Neige";
+						this.vigiWeatherRisksIcon[i] = "snowflake";
 						break;
 					case 6:
-						this.vigiWeatherRisksLegend.push("Canicule");
-						this.vigiWeatherRisksIcon.push("thermometer-full");
+						this.vigiWeatherRisksLegend[i] = "Canicule";
+						this.vigiWeatherRisksIcon[i] = "thermometer-full";
 						break;
 					case 7:
-						this.vigiWeatherRisksLegend.push("Grand Froid");
-						this.vigiWeatherRisksIcon.push("thermometer-empty");
+						this.vigiWeatherRisksLegend[i] = "Grand Froid";
+						this.vigiWeatherRisksIcon[i] = "thermometer-empty";
 						break;
 					case 8:
-						this.vigiWeatherRisksLegend.push("Avalanches");
-						this.vigiWeatherRisksIcon.push("mountain");
+						this.vigiWeatherRisksLegend[i] = "Avalanches";
+						this.vigiWeatherRisksIcon[i] = "mountain";
 						break;
 					case 9:
-						this.vigiWeatherRisksLegend.push("Vagues-Submersion");
-						this.vigiWeatherRisksIcon.push("water");
+						this.vigiWeatherRisksLegend[i] = "Vagues-Submersion";
+						this.vigiWeatherRisksIcon[i] = "water";
 						break;
 				}
 			}
@@ -218,6 +223,7 @@ Module.register("MMM-VigilanceMeteoFrance",{
 
 		this.loaded = true;
 		this.updateDom(this.config.animationSpeed);
+		this.scheduleUpdate();
 	},
 
 	// Schedule next update

@@ -17,7 +17,7 @@ var parseXML = require('xml2js').parseString;
 module.exports = NodeHelper.create({
 
 	start: function() {
-		this.started = false;
+		this.interval = null;
 	},
 
 	getData: function() {
@@ -60,11 +60,10 @@ module.exports = NodeHelper.create({
 
 	socketNotificationReceived: function(notification, payload) {
 		var self = this;
-		if (notification === 'CONFIG' && self.started == false) {
+		if (notification === 'CONFIG') {
 			self.config = payload;
 			self.sendSocketNotification("STARTED", true);
 			self.getData();
-			self.started = true;
 		}
 	}
 
