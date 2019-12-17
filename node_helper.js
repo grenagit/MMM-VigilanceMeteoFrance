@@ -16,10 +16,6 @@ var parseXML = require('xml2js').parseString;
 
 module.exports = NodeHelper.create({
 
-	start: function() {
-		this.interval = null;
-	},
-
 	getData: function() {
 		var self = this;
 
