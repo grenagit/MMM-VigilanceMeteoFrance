@@ -37,7 +37,7 @@ Configure the module in your config.js file.
 
 ## Update:
 
-In your terminal, go to your MMM-APOD's Module folder:
+In your terminal, go to your MMM-VigilanceMeteoFrance's Module folder:
 ```shell
 cd ~/MagicMirror/modules/MMM-VigilanceMeteoFrance
 ```
@@ -45,6 +45,11 @@ cd ~/MagicMirror/modules/MMM-VigilanceMeteoFrance
 Incorporate changes from this repository:
 ```shell
 git pull
+```
+
+Install dependencies:
+```shell
+npm install
 ```
 
 ## Configuration:
@@ -74,7 +79,7 @@ The following properties can be configured:
 | `department`                 | The department number (metropolitan france only). <br><br>  This value is **REQUIRED**
 | `updateInterval`             | How often does the content needs to be fetched? (Milliseconds) <br><br> **Possible values:** `1000` - `86400000` <br> **Default value:** `1 * 60 * 60 * 1000` (1 hour)
 | `animationSpeed`             | Speed of the update animation. (Milliseconds) <br><br> **Possible values:**`0` - `5000` <br> **Default value:** `1000` (1 second)
-| `maxTextWidth`              | Maximum width for desription display. If set to 0, there is no limit. (Pixels) <br><br> **Possible values:**`0` - `5000` <br> **Default value:** `0` (no limit)
+| `maxTextWidth`               | Maximum width for desription display. If set to 0, there is no limit. (Pixels) <br><br> **Possible values:**`0` - `5000` <br> **Default value:** `0` (no limit)
 | `showDescription`            | Show the description. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `false`
 | `showRiskLegend`             | Show the risk legend. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `true`
 | `useColorLegend`             | Use the colored icons. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `true`
@@ -83,12 +88,12 @@ The following properties can be configured:
 | `apiBase`                    | The Météo France API base URL. <br><br> **Default value:**  `'http://www.vigilance.weatherfrance.com/'`
 | `vigiEndpoint`               | The Vigilance API endPoint. <br><br> **Default value:**  `'data/NXFR33_LFPW_.xml'`
 
-### Todo
+## Todo:
 
 - [x] Manage risks at different levels in the same department.
 - [ ] Display an notification at the start of the MagicMirror in case of vigilance level 2 to 4.
 - [ ] Display an notification in case of new risk.
 
-### License
+## License:
 
 This module is licensed under the MIT License
