@@ -15,9 +15,11 @@ Module.register("MMM-VigilanceMeteoFrance",{
 		department: 0,
 		updateInterval: 1 * 60 * 60 * 1000, // every 1 hour
 		animationSpeed: 1000, // 1 second
+		notificationDuration: 1 * 60 * 1000, // 1 minute
 		maxTextWidth: 0,
 		showDescription: false,
 		showRiskLegend: true,
+		showNotification: true,
 		useColorLegend: true,
 
 		initialLoadDelay: 0, // 0 seconds delay
@@ -43,6 +45,9 @@ Module.register("MMM-VigilanceMeteoFrance",{
 		this.vigiWeatherRisksLevel = [];
 		this.vigiWeatherRisksLegend = [];
 		this.vigiWeatherRisksIcon = [];
+
+		this.lastData = {};
+
 		this.loaded = false;
 
 		this.scheduleUpdate(this.config.initialLoadDelay);
@@ -151,12 +156,12 @@ Module.register("MMM-VigilanceMeteoFrance",{
 			case 1:
 				this.vigiWeatherTitle = "Vigilance verte";
 				this.vigiWeatherDescription = "Pas de vigilance particulière.";
-				this.vigiWeatherColor = "green";
+				this.vigiWeatherColor = "vert";
 				break;
 			case 2:
 				this.vigiWeatherTitle = "Vigilance jaune";
 				this.vigiWeatherDescription = "Soyer attentif si vous pratiquez des activités sensibles au risque météorologique.";
-				this.vigiWeatherColor = "yellow";
+				this.vigiWeatherColor = "jaune";
 				break;
 			case 3:
 				this.vigiWeatherTitle = "Vigilance orange";
@@ -166,8 +171,20 @@ Module.register("MMM-VigilanceMeteoFrance",{
 			case 4:
 				this.vigiWeatherTitle = "Vigilance rouge";
 				this.vigiWeatherDescription = "Une vigilance absolue s'impose, des phénomènes dangereux d'intensité exceptionnelle sont prévus.";
-				this.vigiWeatherColor = "red";
+				this.vigiWeatherColor = "rouge";
 				break;
+		}
+
+		if(this.config.showNotification) {
+			if(!this.loaded && data.level >= 2) {
+				this.notifyVigi("Attention, votre <strong>département</strong> est placé en <strong>vigilance " + this.vigiWeatherColor + "</strong> !");
+			}
+			if(this.loaded && data.level > this.lastData.level) {
+				this.notifyVigi("Attention, le <strong>niveau de vigilance</strong> augmente dans <strong>votre département</strong> !");
+			}
+			if(this.loaded && data.level < this.lastData.level) {
+				this.notifyVigi("Bonne nouvelle, le <strong>niveau de vigilance</strong> diminue dans <strong>votre département</strong> !");
+			}
 		}
 
 		this.vigiWeatherRisks = [];
@@ -221,7 +238,23 @@ Module.register("MMM-VigilanceMeteoFrance",{
 			}
 		}
 
+
+		if(this.loaded && this.config.showNotification) {
+			var self = this;
+			let newRisks = data.risks.filter(function(obj) {
+    		return !self.lastData.risks.some(function(obj2) {
+        	return obj.id == obj2.id;
+    		});
+			});
+			if(newRisks.length == 1) {
+				this.notifyVigi("Attention, un <strong>nouveau risque</strong> vient d'être <strong>signalé</strong> dans <strong>votre département</strong> !");
+			} else if(newRisks.length > 1) {
+				this.notifyVigi("Attention, de <strong>nouveaux risques</strong> viennent d'être <strong>signalés</strong> dans <strong>votre département</strong> !");
+			}
+		}
+
 		this.loaded = true;
+		this.lastData = data;
 		this.updateDom(this.config.animationSpeed);
 		this.scheduleUpdate();
 	},
@@ -255,6 +288,16 @@ Module.register("MMM-VigilanceMeteoFrance",{
 				return "#b30000";
 				break;
 		}
-	}
+	},
+
+	// Send notification 
+	notifyVigi: function (text) {
+		this.sendNotification("SHOW_ALERT", {
+			type: "notification",
+			title: "Vigilance Météo France",
+			message: text,
+			timer: this.config.notificationDuration
+		});
+	 }
 
 });

@@ -1,7 +1,7 @@
 # Module: MMM-VigilanceMeteoFrance
-This module displays the current level of vigilance of weather phenomena set by Météo France for each department of metropolitan france, including description and the associated risks.
+This module displays the current level of vigilance of weather phenomena set by Météo France for each department of metropolitan france, including description and the associated risks. A notification is displayed in case of a change in the level of vigilance or new risks.
 
-Description, Risk legend and Color Legend display may be enabled or disabled independently. The max-width of the description can be fixed. 
+Description, Risk legend and Color Legend display may be enabled or disabled independently. The max-width of the description can be fixed. Notifications can be disabled.
 
 <p align="left">
 <img alt="MMM-VigilanceMeteoFrance Screenshot #1" src="MMM-VigilanceMeteoFrance_screenshot1.png" align="top" height="73px">
@@ -79,9 +79,11 @@ The following properties can be configured:
 | `department`                 | The department number (metropolitan france only). <br><br>  This value is **REQUIRED**
 | `updateInterval`             | How often does the content needs to be fetched? (Milliseconds) <br><br> **Possible values:** `1000` - `86400000` <br> **Default value:** `1 * 60 * 60 * 1000` (1 hour)
 | `animationSpeed`             | Speed of the update animation. (Milliseconds) <br><br> **Possible values:**`0` - `5000` <br> **Default value:** `1000` (1 second)
+| `notificationDuration`       | Time to display notification. (Milliseconds) <br><br> **Possible values:**`1000` - `86400000` <br> **Default value:** `1 * 60 * 1000` (1 minute)
 | `maxTextWidth`               | Maximum width for desription display. If set to 0, there is no limit. (Pixels) <br><br> **Possible values:**`0` - `5000` <br> **Default value:** `0` (no limit)
 | `showDescription`            | Show the description. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `false`
 | `showRiskLegend`             | Show the risk legend. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `true`
+| `showNotification`           | Show notification (level of vigilance change or new risks). <br><br> **Possible values:** `true` or `false` <br> **Default value:** `true`
 | `useColorLegend`             | Use the colored icons. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `true`
 | `initialLoadDelay`           | The initial delay before loading. If you have multiple modules that use the same API key, you might want to delay one of the requests. (Milliseconds) <br><br> **Possible values:** `1000` - `5000` <br> **Default value:**  `0`
 | `retryDelay`                 | The delay before retrying after a request failure. (Milliseconds) <br><br> **Possible values:** `1000` - `60000` <br> **Default value:**  `2500`
@@ -91,8 +93,8 @@ The following properties can be configured:
 ## Todo:
 
 - [x] Manage risks at different levels in the same department.
-- [ ] Display an notification at the start of the MagicMirror in case of vigilance level 2 to 4.
-- [ ] Display an notification in case of new risk.
+- [x] Display an notification at the start of the MagicMirror in case of vigilance level 2 to 4.
+- [x] Display an notification in case of new risk.
 
 ## License:
 
