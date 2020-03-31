@@ -106,6 +106,13 @@ For example, use `this.sendNotification("VIGI_METEOFRANCE_DEPARTMENT", 75);` if 
 - [x] Display an notification at the start of the MagicMirror in case of vigilance level 2 to 4.
 - [x] Display an notification in case of new risk.
 
+## Testing:
+
+To test the new features, you can use the testing branch:
+
+- Change from master version to testing version: `git checkout testing`
+- Return to master version from testing version: `git checkout master`
+
 ## License:
 
 This module is licensed under the MIT License
