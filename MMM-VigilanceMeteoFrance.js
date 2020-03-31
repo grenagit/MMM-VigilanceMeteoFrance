@@ -144,6 +144,18 @@ Module.register("MMM-VigilanceMeteoFrance",{
 		}
 	},
 
+	// Change the vigilance department upon receipt of notification
+	notificationReceived: function(notification, payload) {
+		if (notification === "VIGI_METEOFRANCE_DEPARTMENT" && payload != this.config.department) {
+			this.config.department = payload;
+			this.lastData = {};
+
+			this.loaded = false;
+
+			this.sendSocketNotification('CONFIG', this.config);
+		}
+	},
+
 	// Use the received data to set the various values before update DOM
 	processVigi: function(data) {
 		if (!data || data.department != this.config.department || !data.level || typeof data.risks === "undefined") {

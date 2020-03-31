@@ -90,6 +90,16 @@ The following properties can be configured:
 | `apiBase`                    | The Météo France API base URL. <br><br> **Default value:**  `'http://www.vigilance.weatherfrance.com/'`
 | `vigiEndpoint`               | The Vigilance API endPoint. <br><br> **Default value:**  `'data/NXFR33_LFPW_.xml'`
 
+### Notifications
+
+The following [notifications](https://github.com/MichMich/MagicMirror/wiki/notifications) can be used by other modules:
+
+| Action                          | Notification                | Payload
+| ------------------------------- | --------------------------- | -------
+| Change the vigilance department | VIGI_METEOFRANCE_DEPARTMENT | The department number
+
+For example, use `this.sendNotification("VIGI_METEOFRANCE_DEPARTMENT", 75);` if you want to change department number so that it corresponds to that of Paris (75).
+
 ## Todo:
 
 - [x] Manage risks at different levels in the same department.
