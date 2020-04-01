@@ -90,7 +90,7 @@ The following properties can be configured:
 | `apiBase`                    | The Météo France API base URL. <br><br> **Default value:**  `'http://www.vigilance.weatherfrance.com/'`
 | `vigiEndpoint`               | The Vigilance API endPoint. <br><br> **Default value:**  `'data/NXFR33_LFPW_.xml'`
 
-### Notifications
+### Integration with other modules
 
 The following [notifications](https://github.com/MichMich/MagicMirror/wiki/notifications) can be used by other modules:
 
@@ -112,6 +112,7 @@ To test the new features, you can use the testing branch:
 
 - Change from master version to testing version: `git checkout testing`
 - Return to master version from testing version: `git checkout master`
+- Check the version used: `git branch -v`
 
 ## License:
 
