@@ -139,6 +139,8 @@ Module.register("MMM-VigilanceMeteoFrance",{
 	socketNotificationReceived: function(notification, payload) {
 		if (notification === "STARTED") {
 			this.updateDom(this.config.animationSpeed);
+		} else if (notification === "ERROR") {
+			Log.error(this.name + ": Do not access to data (" + payload + " HTTP error).");
 		} else if (notification === "DATA") {
 			this.processVigi(JSON.parse(payload));
 		}
