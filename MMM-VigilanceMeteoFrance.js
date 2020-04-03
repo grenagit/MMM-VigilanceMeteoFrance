@@ -105,7 +105,7 @@ Module.register("MMM-VigilanceMeteoFrance",{
 
 		if (this.vigiWeatherRisks) {
 			var risks = document.createElement("div");
-			risks.className = "normal small";
+			risks.className = "normal small risks";
 
 			for (let i = 0; i < this.vigiWeatherRisks.length; i++) {
 				if (i > 0) {
