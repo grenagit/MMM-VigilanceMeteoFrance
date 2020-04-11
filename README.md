@@ -81,6 +81,7 @@ The following properties can be configured:
 | `animationSpeed`             | Speed of the update animation. (Milliseconds) <br><br> **Possible values:**`0` - `5000` <br> **Default value:** `1000` (1 second)
 | `notificationDuration`       | Time to display notification. (Milliseconds) <br><br> **Possible values:**`1000` - `86400000` <br> **Default value:** `1 * 60 * 1000` (1 minute)
 | `maxTextWidth`               | Maximum width for desription display. If set to 0, there is no limit. (Pixels) <br><br> **Possible values:**`0` - `5000` <br> **Default value:** `0` (no limit)
+| `showDepartment `            | Show the department name. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `false`
 | `showDescription`            | Show the description. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `false`
 | `showRiskLegend`             | Show the risk legend. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `true`
 | `showNotification`           | Show notification (level of vigilance change or new risks). <br><br> **Possible values:** `true` or `false` <br> **Default value:** `true`
@@ -89,6 +90,7 @@ The following properties can be configured:
 | `retryDelay`                 | The delay before retrying after a request failure. (Milliseconds) <br><br> **Possible values:** `1000` - `60000` <br> **Default value:**  `2500`
 | `apiBase`                    | The Météo France API base URL. <br><br> **Default value:**  `'http://www.vigilance.weatherfrance.com/'`
 | `vigiEndpoint`               | The Vigilance API endPoint. <br><br> **Default value:**  `'data/NXFR33_LFPW_.xml'`
+| `frenchDepartmentsTable`     | The conversion table to convert the department number to department name. 
 
 ### Integration with other modules
 
@@ -102,6 +104,7 @@ For example, use `this.sendNotification("VIGI_METEOFRANCE_DEPARTMENT", 75);` if 
 
 ## Todo:
 
+- [x] Display, if you want, the department name.
 - [x] Manage risks at different levels in the same department.
 - [x] Display an notification at the start of the MagicMirror in case of vigilance level 2 to 4.
 - [x] Display an notification in case of new risk.

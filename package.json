@@ -1,6 +1,6 @@
 {
   "name": "MMM-VigilanceMeteoFrance",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Module for a Magic Mirror device display the current level of vigilance of weather phenomena in metropolitan france.",
   "main": "MMM-VigilanceMeteoFrance.js",
   "author": "Grena",
