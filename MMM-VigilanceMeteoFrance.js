@@ -142,7 +142,6 @@ Module.register("MMM-VigilanceMeteoFrance",{
 	start: function() {
 		Log.info("Starting module: " + this.name);
 
-		this.departmentName = null;
 		this.vigiWeatherLevel = null;
 		this.vigiWeatherTitle = null;
 		this.vigiWeatherDescription = null;
