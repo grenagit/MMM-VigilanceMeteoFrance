@@ -25,7 +25,7 @@ Module.register("MMM-VigilanceMeteoFrance",{
 
 		initialLoadDelay: 0, // 0 seconds delay
 
-		apiBase: "http://www.vigilance.meteofrance.com/",
+		apiBase: "http://vigilance2019.meteofrance.com/",
 		vigiEndpoint: "data/NXFR33_LFPW_.xml",
 		frenchDepartmentsTable: {
 			"01": "Ain",
