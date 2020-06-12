@@ -8,7 +8,7 @@
  * MIT Licensed.
  */
 
-Module.register("MMM-VigilanceMeteoFrance",{
+Module.register("MMM-VigilanceMeteoFrance", {
 
 	// Default module config
 	defaults: {
@@ -17,6 +17,7 @@ Module.register("MMM-VigilanceMeteoFrance",{
 		animationSpeed: 1000, // 1 second
 		notificationDuration: 1 * 60 * 1000, // 1 minute
 		maxTextWidth: 0,
+		maxRisksInline: 3,
 		showDepartment: false,
 		showDescription: false,
 		showRiskLegend: true,
@@ -25,7 +26,7 @@ Module.register("MMM-VigilanceMeteoFrance",{
 
 		initialLoadDelay: 0, // 0 seconds delay
 
-		apiBase: "http://www.vigilance.meteofrance.com/",
+		apiBase: "http://vigilance2019.meteofrance.com/",
 		vigiEndpoint: "data/NXFR33_LFPW_.xml",
 		frenchDepartmentsTable: {
 			"01": "Ain",
@@ -222,9 +223,14 @@ Module.register("MMM-VigilanceMeteoFrance",{
 
 			for (let i = 0; i < this.vigiWeatherRisks.length; i++) {
 				if (i > 0) {
-			 		var spacer = document.createElement("span");
-					spacer.innerHTML = "&nbsp;&nbsp;&nbsp;";
-					risks.appendChild(spacer);
+					if(i % this.config.maxRisksInline == 0) {
+						var breakline = document.createElement("br");
+						risks.appendChild(breakline);
+					} else {
+						var spacer = document.createElement("span");
+						spacer.innerHTML = "&nbsp;&nbsp;&nbsp;";
+						risks.appendChild(spacer);
+					}
 				}
 
 				var risksIcon = document.createElement('span');
