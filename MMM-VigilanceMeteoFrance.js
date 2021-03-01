@@ -22,6 +22,7 @@ Module.register("MMM-VigilanceMeteoFrance", {
 		showDescription: false,
 		showRiskLegend: true,
 		showNotification: true,
+		hideGreenLevel: false,
 		useColorLegend: true,
 
 		initialLoadDelay: 0, // 0 seconds delay
@@ -177,7 +178,7 @@ Module.register("MMM-VigilanceMeteoFrance", {
 			wrapper.className = "dimmed light small";
 			return wrapper;
 		}
-
+		
 		if (this.config.showDepartment) {
 			var weatherDepartment = document.createElement('div');
 			weatherDepartment.className = "dimmed light small department";
@@ -285,6 +286,15 @@ Module.register("MMM-VigilanceMeteoFrance", {
 		}
 
 		this.vigiWeatherLevel = data.level;
+		
+		if(this.config.hideGreenLevel) {
+			if(data.level == 1) {
+				this.hide();
+			} else {
+				this.show();
+			}
+		}
+		
 		switch (data.level) {
 			case 1:
 				this.vigiWeatherTitle = "Vigilance verte";
