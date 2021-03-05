@@ -86,6 +86,7 @@ The following properties can be configured:
 | `showDescription`            | Show the description. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `false`
 | `showRiskLegend`             | Show the risk legend. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `true`
 | `showNotification`           | Show notification (level of vigilance change or new risks). <br><br> **Possible values:** `true` or `false` <br> **Default value:** `true`
+| `hideGreenLevel`             | Hide module when vigilance level is green. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `false`
 | `useColorLegend`             | Use the colored icons. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `true`
 | `initialLoadDelay`           | The initial delay before loading. If you have multiple modules that use the same API key, you might want to delay one of the requests. (Milliseconds) <br><br> **Possible values:** `1000` - `5000` <br> **Default value:**  `0`
 | `retryDelay`                 | The delay before retrying after a request failure. (Milliseconds) <br><br> **Possible values:** `1000` - `60000` <br> **Default value:**  `2500`
@@ -105,6 +106,7 @@ For example, use `this.sendNotification("VIGI_METEOFRANCE_DEPARTMENT", 75);` if 
 
 ## Todo:
 
+- [x] Hide, if you want, the module when vigilance level is green.
 - [x] Display, if you want, the department name.
 - [x] Manage risks at different levels in the same department.
 - [x] Display an notification at the start of the MagicMirror in case of vigilance level 2 to 4.
