@@ -77,6 +77,7 @@ The following properties can be configured:
 | Option                       | Description
 | ---------------------------- | -----------
 | `department`                 | The department number (metropolitan france only). <br><br>  This value is **REQUIRED**
+| `excludedRisks`              | The table of excluded risks (see below for the identifiers to be used).<br><br> **Use with caution (some risks that may be important will not be displayed)** <br> **Default value:** `[]` (any)
 | `updateInterval`             | How often does the content needs to be fetched? (Milliseconds) <br><br> **Possible values:** `1000` - `86400000` <br> **Default value:** `1 * 60 * 60 * 1000` (1 hour)
 | `animationSpeed`             | Speed of the update animation. (Milliseconds) <br><br> **Possible values:**`0` - `5000` <br> **Default value:** `1000` (1 second)
 | `notificationDuration`       | Time to display notification. (Milliseconds) <br><br> **Possible values:**`1000` - `86400000` <br> **Default value:** `1 * 60 * 1000` (1 minute)
@@ -92,7 +93,26 @@ The following properties can be configured:
 | `retryDelay`                 | The delay before retrying after a request failure. (Milliseconds) <br><br> **Possible values:** `1000` - `60000` <br> **Default value:**  `2500`
 | `apiBase`                    | The Météo France API base URL. <br><br> **Default value:**  `'http://vigilance2019.weatherfrance.com/'`
 | `vigiEndpoint`               | The Vigilance API endPoint. <br><br> **Default value:**  `'data/NXFR33_LFPW_.xml'`
-| `frenchDepartmentsTable`     | The conversion table to convert the department number to department name. 
+| `frenchDepartmentsTable`     | The conversion table to convert the department number to department name.
+
+Identifants used for risks in `excludedRisks`:
+
+| Id | Risk
+| -- | ----
+| 1  | Vent
+| 2  | Pluie-Inondation
+| 3  | Orages
+| 4  | Inondation
+| 5  | Neige
+| 6  | Canicule
+| 7  | Grand Froid
+| 8  | Avalanches
+| 9  | Vagues-Submersion
+
+*For example:*
+- If you don’t want to see avalanche risks : `excludedRisks: [8],`
+- If you don’t want to see the risks of heat wave and extreme cold : `excludedRisks: [6, 7],`
+
 
 ### Integration with other modules
 
