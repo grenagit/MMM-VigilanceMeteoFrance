@@ -37,9 +37,11 @@ module.exports = NodeHelper.create({
 					if (data[i].$.dep == self.config.department || data[i].$.dep == (self.config.department + "10")) {
 						if (data[i].risque) {
 							for (let j = 0; j < data[i].risque.length; j++) {
-								risks.push({"id": parseInt(data[i].risque[j].$.val), "level": parseInt(data[i].$.coul)});
-								if (data[i].$.coul > level) {
-									level = parseInt(data[i].$.coul);
+								if (!self.config.excludedRisks.includes(parseInt(data[i].risque[j].$.val))) {
+									risks.push({"id": parseInt(data[i].risque[j].$.val), "level": parseInt(data[i].$.coul)});
+									if (data[i].$.coul > level) {
+										level = parseInt(data[i].$.coul);
+									}
 								}
 							}
 						}

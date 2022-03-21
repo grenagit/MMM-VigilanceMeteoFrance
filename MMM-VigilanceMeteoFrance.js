@@ -13,6 +13,7 @@ Module.register("MMM-VigilanceMeteoFrance", {
 	// Default module config
 	defaults: {
 		department: 0,
+		excludedRisks: [],
 		updateInterval: 1 * 60 * 60 * 1000, // every 1 hour
 		animationSpeed: 1000, // 1 second
 		notificationDuration: 1 * 60 * 1000, // 1 minute
