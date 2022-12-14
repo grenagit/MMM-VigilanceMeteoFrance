@@ -13,6 +13,7 @@ Module.register("MMM-VigilanceMeteoFrance", {
 	// Default module config
 	defaults: {
 		department: 0,
+		excludedRisks: [],
 		updateInterval: 1 * 60 * 60 * 1000, // every 1 hour
 		animationSpeed: 1000, // 1 second
 		notificationDuration: 1 * 60 * 1000, // 1 minute
@@ -30,15 +31,15 @@ Module.register("MMM-VigilanceMeteoFrance", {
 		apiBase: "http://vigilance2019.meteofrance.com/",
 		vigiEndpoint: "data/NXFR33_LFPW_.xml",
 		frenchDepartmentsTable: {
-			"01": "Ain",
-			"02": "Aisne",
-			"03": "Allier",
-			"04": "Alpes-de-Haute-Provence",
-			"05": "Hautes-Alpes",
-			"06": "Alpes-Maritimes",
-			"07": "Ardèche",
-			"08": "Ardennes",
-			"09": "Ariège",
+			"1": "Ain",
+			"2": "Aisne",
+			"3": "Allier",
+			"4": "Alpes-de-Haute-Provence",
+			"5": "Hautes-Alpes",
+			"6": "Alpes-Maritimes",
+			"7": "Ardèche",
+			"8": "Ardennes",
+			"9": "Ariège",
 			"10": "Aube",
 			"11": "Aude",
 			"12": "Aveyron",
