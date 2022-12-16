@@ -40,7 +40,7 @@ module.exports = NodeHelper.create({
 					method: 'get'
 				})
 				.then(function(response) {
-					if (response.status == 200 && response.data) {
+					if(response.status == 200 && response.data) {
 						self.formatData(response.data);
 					} else {
 						self.sendSocketNotification("ERROR", 'MeteoFrance Vigilance error: ' + response.statusText);
@@ -88,7 +88,7 @@ module.exports = NodeHelper.create({
 
 	socketNotificationReceived: function(notification, payload) {
 		var self = this;
-		if (notification === 'CONFIG') {
+		if(notification === 'CONFIG') {
 			self.config = payload;
 			self.sendSocketNotification("STARTED", true);
 			self.getData();
