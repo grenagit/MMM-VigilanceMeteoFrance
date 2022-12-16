@@ -9,7 +9,9 @@ Description, Risk legend and Color Legend display may be enabled or disabled ind
 <img alt="MMM-VigilanceMeteoFrance Screenshot #3" src="MMM-VigilanceMeteoFrance_screenshot3.png" align="top" height="97px">
 </p>
 
-[MagicMirror Project on Github](https://github.com/MichMich/MagicMirror) | [Vigilance on Météo France](http://www.vigilance.meteofrance.com/)
+[MagicMirror Project on Github](https://github.com/MichMich/MagicMirror) | [Vigilance on Météo France](https://vigilance.meteofrance.fr) | [APIs on Météo France](https://portail-api.meteofrance.fr)
+
+⚠️ **MMM-VigilanceMeteoFrance 2.0** (January 2023) uses the **new vigilance API** (v1) from Météo France which provides more complete data. **Keys** are **now required** for the module to work! [More info here](https://portail-api.meteofrance.fr/devportal/services/aide)
 
 ## Installation:
 
@@ -63,11 +65,17 @@ modules: [
 		module: "MMM-VigilanceMeteoFrance",
 		position: "top_left",
 		config: {
+			apiConsumerKey: "abcde12345abcde12345abcde123", // Vigilance API Consumer Key
+			apiConsumerSecret: "abcde12345abcde12345abcde123", // Vigilance API Consumer Secret
 			department: 75, // Department number
 		}
 	}
 ]
 ```
+
+You can use these special keys for your tests, but it has much lower rate limits!
+- API Consumer Key: `ZE9_CoX4J82vLq49L5oarTCt8WYa`
+- API Consumer Secret: `ekxPoVj2dPirwsJXrssEAY3Y1Rsa`
 
 ### Options
 
@@ -76,6 +84,8 @@ The following properties can be configured:
 
 | Option                       | Description
 | ---------------------------- | -----------
+| `apiConsumerKey`             | The [Vigilance](https://portail-api.meteofrance.fr/devportal/apis/5e99a87c-d50d-465b-a33f-1f12cf675161/overview) API Consumer Key (Oauth2), which can be obtained by [subscribing](https://portail-api.meteofrance.fr/devportal/apis/5e99a87c-d50d-465b-a33f-1f12cf675161/overview) on Météo France API portal in the `OAuth2 Tokens` tab of [your application](https://portail-api.meteofrance.fr/devportal/applications/). It's free! <br><br>  This value is **REQUIRED**
+| `apiConsumerSecret`          | The [Vigilance](https://portail-api.meteofrance.fr/devportal/apis/5e99a87c-d50d-465b-a33f-1f12cf675161/overview) API Consumer Secret (Oauth2), which can be obtained by [subscribing](https://portail-api.meteofrance.fr/devportal/apis/5e99a87c-d50d-465b-a33f-1f12cf675161/overview) on Météo France API portal in the `OAuth2 Tokens` tab of [your application](https://portail-api.meteofrance.fr/devportal/applications/). It's free! <br><br>  This value is **REQUIRED**
 | `department`                 | The department number (metropolitan france only). <br><br>  This value is **REQUIRED**
 | `excludedRisks`              | The table of excluded risks (see below for the identifiers to be used).<br><br> **Use with caution (some risks that may be important will not be displayed)** <br> **Default value:** `[]` (any)
 | `updateInterval`             | How often does the content needs to be fetched? (Milliseconds) <br><br> **Possible values:** `1000` - `86400000` <br> **Default value:** `1 * 60 * 60 * 1000` (1 hour)

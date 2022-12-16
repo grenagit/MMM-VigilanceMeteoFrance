@@ -12,6 +12,8 @@ Module.register("MMM-VigilanceMeteoFrance", {
 
 	// Default module config
 	defaults: {
+		apiConsumerKey: "",
+		apiConsumerSecret: "",
 		department: 0,
 		excludedRisks: [],
 		updateInterval: 1 * 60 * 60 * 1000, // every 1 hour
@@ -28,8 +30,8 @@ Module.register("MMM-VigilanceMeteoFrance", {
 
 		initialLoadDelay: 0, // 0 seconds delay
 
-		apiBase: "http://vigilance2019.meteofrance.com/",
-		vigiEndpoint: "data/NXFR33_LFPW_.xml",
+		oauthEndpoint: "https://portail-api.meteofrance.fr/token",
+		vigiEndpoint: "https://public-api.meteofrance.fr/public/DPVigilance/v1/cartevigilance/encours",
 		frenchDepartmentsTable: {
 			"1": "Ain",
 			"2": "Aisne",
@@ -168,6 +170,12 @@ Module.register("MMM-VigilanceMeteoFrance", {
 			wrapper.style = "max-width: " + this.config.maxTextWidth + "px;";
 		}
 
+		if (this.config.apiConsumerKey === "" || this.config.apiConsumerSecret === "") {
+			wrapper.innerHTML = "Please set the correct <i>apiConsumerKey</i> and <i>apiConsumerSecret</i> in the config for module: " + this.name + ".";
+			wrapper.className = "dimmed light small";
+			return wrapper;
+		}
+
 		if (!this.config.department) {
 			wrapper.innerHTML = "Please set the vigilance <i>department</i> in the config for module: " + this.name + ".";
 			wrapper.className = "dimmed light small";
@@ -256,14 +264,17 @@ Module.register("MMM-VigilanceMeteoFrance", {
 		return wrapper;
 	},
 
-	// Request new data from vigilance.weatherfrance.com with node_helper
+	// Request new data from meteofrance.fr with node_helper
 	socketNotificationReceived: function(notification, payload) {
 		if (notification === "STARTED") {
 			this.updateDom(this.config.animationSpeed);
-		} else if (notification === "ERROR") {
-			Log.error(this.name + ": Do not access to data (" + payload + " HTTP error).");
 		} else if (notification === "DATA") {
 			this.processVigi(JSON.parse(payload));
+		} else if (notification === "ERROR") {
+			Log.error(this.name + ": Do not access to data (" + payload + ").");
+			this.scheduleUpdate();
+		} else if(notification === "DEBUG") {
+			Log.log(payload);
 		}
 	},
 
