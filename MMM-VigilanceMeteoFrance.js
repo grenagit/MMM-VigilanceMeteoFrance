@@ -156,10 +156,7 @@ Module.register("MMM-VigilanceMeteoFrance", {
 		this.vigiWeatherLevel = null;
 		this.vigiWeatherTitle = null;
 		this.vigiWeatherDescription = null;
-		this.vigiWeatherRisks = [];
-		this.vigiWeatherRisksLevel = [];
-		this.vigiWeatherRisksLegend = [];
-		this.vigiWeatherRisksIcon = [];
+		this.vigiWeatherCurrentRisks = [];
 
 		this.lastData = {};
 
@@ -233,11 +230,11 @@ Module.register("MMM-VigilanceMeteoFrance", {
 			wrapper.appendChild(weatherDescription);
 		}
 
-		if(this.vigiWeatherRisks) {
+		if(this.vigiWeatherCurrentRisks) {
 			var risks = document.createElement("div");
 			risks.className = "normal small risks";
 
-			for(let i = 0; i < this.vigiWeatherRisks.length; i++) {
+			for(let i = 0; i < this.vigiWeatherCurrentRisks.length; i++) {
 				if(i > 0) {
 					if(i % this.config.maxRisksInline == 0) {
 						var breakline = document.createElement("br");
@@ -250,16 +247,16 @@ Module.register("MMM-VigilanceMeteoFrance", {
 				}
 
 				var risksIcon = document.createElement('span');
-				risksIcon.className = "fas fa-" + this.vigiWeatherRisksIcon[i];
+				risksIcon.className = "fas fa-" + this.risk2icon(this.vigiWeatherCurrentRisks[i].id);
 				if(this.config.useColorLegend) {
-					risksIcon.style = "color: " + this.level2color(this.vigiWeatherRisksLevel[i]) + ";";
+					risksIcon.style = "color: " + this.level2color(this.vigiWeatherCurrentRisks[i].level) + ";";
 				}
 				risks.appendChild(risksIcon);
 
 				if(this.config.showRiskLegend) {
 					var risksText = document.createElement("span");
 					risksText.className = "dimmed light";
-					risksText.innerHTML = "&nbsp;" + this.vigiWeatherRisksLegend[i];
+					risksText.innerHTML = "&nbsp;" + this.risk2legend(this.vigiWeatherCurrentRisks[i].id);
 					risks.appendChild(risksText);
 				}
 			}
@@ -348,62 +345,11 @@ Module.register("MMM-VigilanceMeteoFrance", {
 			}
 		}
 
-		this.vigiWeatherRisks = [];
-		this.vigiWeatherRisksLevel = [];
-		this.vigiWeatherRisksLegend = [];
-		this.vigiWeatherRisksIcon = [];
-		
-		let currentRisks = data.risks.filter(item => moment().isBetween(moment(item.begin), moment(item.end)));
-
-		if(currentRisks.length > 0) {
-			for(let i = 0; i < currentRisks.length; i++) {
-				this.vigiWeatherRisks[i] = currentRisks[i].id;
-				this.vigiWeatherRisksLevel[i] = currentRisks[i].level;
-
-				switch(data.risks[i].id) {
-					case 1:
-						this.vigiWeatherRisksLegend[i] = "Vent";
-						this.vigiWeatherRisksIcon[i] = "wind";
-						break;
-					case 2:
-						this.vigiWeatherRisksLegend[i] = "Pluie-Inondation";
-						this.vigiWeatherRisksIcon[i] = "cloud-showers-heavy";
-						break;
-					case 3:
-						this.vigiWeatherRisksLegend[i] = "Orages";
-						this.vigiWeatherRisksIcon[i] = "poo-storm";
-						break;
-					case 4:
-						this.vigiWeatherRisksLegend[i] = "Inondation";
-						this.vigiWeatherRisksIcon[i] = "water";
-						break;
-					case 5:
-						this.vigiWeatherRisksLegend[i] = "Neige";
-						this.vigiWeatherRisksIcon[i] = "snowflake";
-						break;
-					case 6:
-						this.vigiWeatherRisksLegend[i] = "Canicule";
-						this.vigiWeatherRisksIcon[i] = "thermometer-full";
-						break;
-					case 7:
-						this.vigiWeatherRisksLegend[i] = "Grand Froid";
-						this.vigiWeatherRisksIcon[i] = "thermometer-empty";
-						break;
-					case 8:
-						this.vigiWeatherRisksLegend[i] = "Avalanches";
-						this.vigiWeatherRisksIcon[i] = "mountain";
-						break;
-					case 9:
-						this.vigiWeatherRisksLegend[i] = "Vagues-Submersion";
-						this.vigiWeatherRisksIcon[i] = "water";
-						break;
-				}
-			}
-		}
+		this.vigiWeatherCurrentRisks = data.risks.filter(item => moment().isBetween(moment(item.begin), moment(item.end)));
 
 		if(this.loaded && this.config.showNotification) {
 			var self = this;
-			let newRisks = currentRisks.filter(function(obj) {
+			let newRisks = self.vigiWeatherCurrentRisks.filter(function(obj) {
 				return !self.lastData.risks.some(function(obj2) {
 					return obj.id == obj2.id;
 				});
@@ -432,6 +378,72 @@ Module.register("MMM-VigilanceMeteoFrance", {
 		setTimeout(function() {
 			self.sendSocketNotification('CONFIG', self.config);
 		}, nextLoad);
+	},
+	
+	// Convert risk's id to legend
+	risk2legend: function(id) {
+		switch(id) {
+			case 1:
+				return "Vent";
+			break;
+			case 2:
+				return "Pluie-Inondation";
+				break;
+			case 3:
+				return "Orages";
+				break;
+			case 4:
+				return "Inondation";
+				break;
+			case 5:
+				return "Neige";
+				break;
+			case 6:
+				return "Canicule";
+				break;
+			case 7:
+				return "Grand Froid";
+				break;
+			case 8:
+				return "Avalanches";
+				break;
+			case 9:
+				return "Vagues-Submersion";
+				break;
+		}
+	},
+	
+	// Convert risk's id to icon
+	risk2icon: function(id) {
+		switch(id) {
+			case 1:
+				return "wind";
+			break;
+			case 2:
+				return "cloud-showers-heavy";
+				break;
+			case 3:
+				return "poo-storm";
+				break;
+			case 4:
+				return "water";
+				break;
+			case 5:
+				return "snowflake";
+				break;
+			case 6:
+				return "thermometer-full";
+				break;
+			case 7:
+				return "thermometer-empty";
+				break;
+			case 8:
+				return "mountain";
+				break;
+			case 9:
+				return "water";
+				break;
+		}
 	},
 
 	// Convert vigilance's level to color
