@@ -137,15 +137,21 @@ Module.register("MMM-VigilanceMeteoFrance", {
 		}
 	},
 
-	// Define required scripts
+	// Define required styles
 	getStyles: function() {
 		return ["MMM-VigilanceMeteoFrance.css", "font-awesome.css"];
 	},
 
+	// Define required scripts
+	getScripts: function() {
+		return ["moment.js"];
+	},
 
 	// Define start sequence
 	start: function() {
 		Log.info("Starting module: " + this.name);
+		
+		moment.updateLocale(config.language);
 
 		this.vigiWeatherLevel = null;
 		this.vigiWeatherTitle = null;
@@ -346,11 +352,13 @@ Module.register("MMM-VigilanceMeteoFrance", {
 		this.vigiWeatherRisksLevel = [];
 		this.vigiWeatherRisksLegend = [];
 		this.vigiWeatherRisksIcon = [];
+		
+		let currentRisks = data.risks.filter(item => moment().isBetween(moment(item.begin), moment(item.end)));
 
-		if(data.risks.length > 0) {
-			for(let i = 0; i < data.risks.length; i++) {
-				this.vigiWeatherRisks[i] = data.risks[i].id;
-				this.vigiWeatherRisksLevel[i] = data.risks[i].level;
+		if(currentRisks.length > 0) {
+			for(let i = 0; i < currentRisks.length; i++) {
+				this.vigiWeatherRisks[i] = currentRisks[i].id;
+				this.vigiWeatherRisksLevel[i] = currentRisks[i].level;
 
 				switch(data.risks[i].id) {
 					case 1:
@@ -395,7 +403,7 @@ Module.register("MMM-VigilanceMeteoFrance", {
 
 		if(this.loaded && this.config.showNotification) {
 			var self = this;
-			let newRisks = data.risks.filter(function(obj) {
+			let newRisks = currentRisks.filter(function(obj) {
 				return !self.lastData.risks.some(function(obj2) {
 					return obj.id == obj2.id;
 				});

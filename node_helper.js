@@ -61,18 +61,24 @@ module.exports = NodeHelper.create({
 	formatData: function(data) { 
 		var self = this;
 
-		let departmentDataJ = data.product.periods[0].timelaps.domain_ids.filter(item => item.domain_id == self.config.department)[0].phenomenon_items;
+		let departmentDataJ = data.product.periods[0].timelaps.domain_ids.filter(item => item.domain_id == self.config.department)[0];
 		let risks = [];
-		let level = 1;
+		let level = departmentDataJ.max_color_id;
+		
+		let phenomenonData = departmentDataJ.phenomenon_items;
 
-		for(let i = 0; i < departmentDataJ.length; i++) {
-			if(!self.config.excludedRisks.includes(parseInt(departmentDataJ[i].phenomenon_id)) && departmentDataJ[i].phenomenon_max_color_id > 1) {
-				risks.push({
-					"id": parseInt(departmentDataJ[i].phenomenon_id),
-					"level": departmentDataJ[i].phenomenon_max_color_id
-				});
-				if(departmentDataJ[i].phenomenon_max_color_id > level) {
-					level = departmentDataJ[i].phenomenon_max_color_id;
+		for(let i = 0; i < phenomenonData.length; i++) {
+			if(!self.config.excludedRisks.includes(parseInt(phenomenonData[i].phenomenon_id)) && phenomenonData[i].phenomenon_max_color_id > 1) {
+			
+				let timelapsData = phenomenonData[i].timelaps_items;
+			
+				for(let j = 0; j < timelapsData.length; j++) {
+					risks.push({
+						"id": parseInt(phenomenonData[i].phenomenon_id),
+						"level": timelapsData[j].color_id,
+						"begin": timelapsData[j].begin_time,
+						"end": timelapsData[j].end_time
+					});
 				}
 			}
 		}
