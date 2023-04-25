@@ -69,8 +69,18 @@ module.exports = NodeHelper.create({
 		let departmentDataJ1 = data.product.periods[1].timelaps.domain_ids.filter(item => item.domain_id == self.config.department)[0];
 
 		let risks = [];
-		let levelJ = departmentDataJ.max_color_id;
-		let levelJ1 = departmentDataJ1.max_color_id;
+		let levels = [];
+		
+		let periodsData = data.product.periods;
+		
+		for(let i = 0; i < 2; i++) {
+		levels.push({
+				"id": periodsData[i].echeance,
+				"level": periodsData[i].timelaps.domain_ids.filter(item => item.domain_id == self.config.department)[0].max_color_id,
+				"begin": periodsData[i].begin_validity_time,
+				"end": periodsData[i].end_validity_time
+			});
+		}
 
 		let phenomenonData = departmentDataJ.phenomenon_items.concat(departmentDataJ1.phenomenon_items);
 
@@ -94,8 +104,7 @@ module.exports = NodeHelper.create({
 
 		self.sendSocketNotification("DATA", JSON.stringify({
 			"department": self.config.department,
-			"levelJ": levelJ,
-			"levelJ1": levelJ1,
+			"levels": levels,
 			"risks": risks
 		}));
 	},

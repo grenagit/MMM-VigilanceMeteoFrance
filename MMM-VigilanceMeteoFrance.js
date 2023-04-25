@@ -154,8 +154,8 @@ Module.register("MMM-VigilanceMeteoFrance", {
 
 		moment.updateLocale(config.language);
 
-		this.vigiWeatherLevelJ = null;
-		this.vigiWeatherLevelJ1 = null;
+		this.vigiWeatherCurrentLevel = null;
+		this.vigiWeatherFutureLevel = null;
 		this.vigiWeatherCurrentRisks = [];
 		this.vigiWeatherFutureRisks = [];
 
@@ -217,7 +217,7 @@ Module.register("MMM-VigilanceMeteoFrance", {
 
 		weatherIcon.className = "fas fa-exclamation-circle dimmed";
 		if(this.config.useColorLegend) {
-			weatherIcon.style = "color: " + this.level2color(this.vigiWeatherLevelJ) + ";";
+			weatherIcon.style = "color: " + this.level2color(this.vigiWeatherCurrentLevel) + ";";
 		}
 		medium.appendChild(weatherIcon);
 
@@ -226,7 +226,7 @@ Module.register("MMM-VigilanceMeteoFrance", {
 		medium.appendChild(spacer);
 
 		var weatherText = document.createElement("span");
-		weatherText.innerHTML = " " + this.level2title(this.vigiWeatherLevelJ);
+		weatherText.innerHTML = " " + this.level2title(this.vigiWeatherCurrentLevel);
 		medium.appendChild(weatherText);
 
 		wrapper.appendChild(medium);
@@ -288,7 +288,7 @@ Module.register("MMM-VigilanceMeteoFrance", {
 
 			weatherIcon.className = "fas fa-exclamation-circle dimmed";
 			if(this.config.useColorLegend) {
-				weatherIcon.style = "color: " + this.level2color(this.vigiWeatherLevelJ1) + ";";
+				weatherIcon.style = "color: " + this.level2color(this.vigiWeatherFutureLevel) + ";";
 			}
 			medium.appendChild(weatherIcon);
 
@@ -297,7 +297,7 @@ Module.register("MMM-VigilanceMeteoFrance", {
 			medium.appendChild(spacer);
 
 			var weatherText = document.createElement("span");
-			weatherText.innerHTML = " " + this.level2title(this.vigiWeatherLevelJ1);
+			weatherText.innerHTML = " " + this.level2title(this.vigiWeatherFutureLevel);
 			medium.appendChild(weatherText);
 
 			wrapper.appendChild(medium);
@@ -334,16 +334,23 @@ Module.register("MMM-VigilanceMeteoFrance", {
 
 	// Use the received data to set the various values before update DOM
 	processVigi: function(data) {
-		if(!data || data.department != this.config.department || !data.levelJ || typeof data.risks === "undefined") {
+		if(!data || data.department != this.config.department || typeof data.levels === "undefined" || typeof data.risks === "undefined") {
 			Log.error(this.name + ": Do not receive usable data.");
 			return;
 		}
+        
+		this.vigiWeatherCurrentLevel = data.levels.find(item => moment().isBetween(moment(item.begin), moment(item.end))).level;
 
-		this.vigiWeatherLevelJ = data.levelJ;
-		this.vigiWeatherLevelJ1 = data.levelJ1;
+		let futureLevelData = data.levels.find(item => moment().isBefore(moment(item.begin)));
+		if(typeof futureLevelData !== "undefined") {
+			this.vigiWeatherFutureLevel = futureLevelData.level;
+		} else {
+			this.config.showForecast = false;
+			Log.error(this.name + ": Tomorrow’s vigilance data is not yet available, please wait until the next update (twice a day at 6am and 4pm).");
+		}
 
 		if(this.config.hideGreenLevel) {
-			if(data.levelJ == 1) {
+			if(this.vigiWeatherCurrentLevel == 1) {
 				this.hide();
 			} else {
 				this.show();
@@ -351,13 +358,13 @@ Module.register("MMM-VigilanceMeteoFrance", {
 		}
 
 		if(this.config.showNotification) {
-			if(!this.loaded && data.levelJ >= 2) {
-				this.notifyVigi("Attention, votre <strong>département</strong> est placé en <strong>" + this.level2title(data.levelJ).toLowerCase() + "</strong> !");
+			if(!this.loaded && this.vigiWeatherCurrentLevel >= 2) {
+				this.notifyVigi("Attention, votre <strong>département</strong> est placé en <strong>" + this.level2title(this.vigiWeatherCurrentLevel).toLowerCase() + "</strong> !");
 			}
-			if(this.loaded && data.levelJ > this.lastdata.levelJ) {
+			if(this.loaded && this.vigiWeatherCurrentLevel > this.lastData.level) {
 				this.notifyVigi("Attention, le <strong>niveau de vigilance</strong> augmente dans <strong>votre département</strong> !");
 			}
-			if(this.loaded && data.levelJ < this.lastdata.levelJ) {
+			if(this.loaded && this.vigiWeatherCurrentLevel < this.lastData.level) {
 				this.notifyVigi("Bonne nouvelle, le <strong>niveau de vigilance</strong> diminue dans <strong>votre département</strong> !");
 			}
 		}
@@ -380,7 +387,10 @@ Module.register("MMM-VigilanceMeteoFrance", {
 		}
 
 		this.loaded = true;
-		this.lastData = data;
+		this.lastData = {
+		    "risks": this.vigiWeatherCurrentRisks,
+		    "level": this.vigiWeatherCurrentLevel
+		};
 		this.updateDom(this.config.animationSpeed);
 		this.scheduleUpdate();
 	},
