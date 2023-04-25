@@ -288,7 +288,7 @@ Module.register("MMM-VigilanceMeteoFrance", {
 
 			weatherIcon.className = "fas fa-exclamation-circle dimmed";
 			if(this.config.useColorLegend) {
-				weatherIcon.style = "color: " + this.level2color(this.vigiWeatherLevelJ) + ";";
+				weatherIcon.style = "color: " + this.level2color(this.vigiWeatherLevelJ1) + ";";
 			}
 			medium.appendChild(weatherIcon);
 
@@ -297,7 +297,7 @@ Module.register("MMM-VigilanceMeteoFrance", {
 			medium.appendChild(spacer);
 
 			var weatherText = document.createElement("span");
-			weatherText.innerHTML = " " + this.level2title(this.vigiWeatherLevelJ);
+			weatherText.innerHTML = " " + this.level2title(this.vigiWeatherLevelJ1);
 			medium.appendChild(weatherText);
 
 			wrapper.appendChild(medium);
