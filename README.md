@@ -96,6 +96,7 @@ The following properties can be configured:
 | `showDepartment`             | Show the department name. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `false`
 | `showDescription`            | Show the description. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `false`
 | `showRiskLegend`             | Show the risk legend. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `true`
+| `showForecast`               | Show the future level of vigilance. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `false`
 | `showNotification`           | Show notification (level of vigilance change or new risks). <br><br> **Possible values:** `true` or `false` <br> **Default value:** `true`
 | `hideGreenLevel`             | Hide module when vigilance level is green. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `false`
 | `useColorLegend`             | Use the colored icons. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `true`

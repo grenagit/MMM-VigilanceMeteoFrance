@@ -24,6 +24,7 @@ Module.register("MMM-VigilanceMeteoFrance", {
 		showDepartment: false,
 		showDescription: false,
 		showRiskLegend: true,
+		showForecast: false,
 		showNotification: true,
 		hideGreenLevel: false,
 		useColorLegend: true,
@@ -153,10 +154,10 @@ Module.register("MMM-VigilanceMeteoFrance", {
 		
 		moment.updateLocale(config.language);
 
-		this.vigiWeatherLevel = null;
-		this.vigiWeatherTitle = null;
-		this.vigiWeatherDescription = null;
+		this.vigiWeatherLevelJ = null;
+		this.vigiWeatherLevelJ1 = null;
 		this.vigiWeatherCurrentRisks = [];
+		this.vigiWeatherFutureRisks = [];
 
 		this.lastData = {};
 
@@ -199,15 +200,24 @@ Module.register("MMM-VigilanceMeteoFrance", {
 
 			wrapper.appendChild(weatherDepartment);
 		}
+		
+		if(this.config.showForecast) {
+		    var weatherTitle = document.createElement("div");
+		    weatherTitle.className = "dimmed light xsmall title";
+		    
+            weatherTitle.innerHTML = "Aujourd'hui :";
+            
+		    wrapper.appendChild(weatherTitle);
+	    }
 
 		var medium = document.createElement("div");
-		medium.className = "normal medium title";
+		medium.className = "normal medium level";
 
 		var weatherIcon = document.createElement('span');
 
 		weatherIcon.className = "fas fa-exclamation-circle dimmed";
 		if(this.config.useColorLegend) {
-			weatherIcon.style = "color: " + this.level2color(this.vigiWeatherLevel) + ";";
+			weatherIcon.style = "color: " + this.level2color(this.vigiWeatherLevelJ) + ";";
 		}
 		medium.appendChild(weatherIcon);
 
@@ -216,7 +226,7 @@ Module.register("MMM-VigilanceMeteoFrance", {
 		medium.appendChild(spacer);
 
 		var weatherText = document.createElement("span");
-		weatherText.innerHTML = " " + this.vigiWeatherTitle;
+		weatherText.innerHTML = " " + this.level2title(this.vigiWeatherLevelJ);
 		medium.appendChild(weatherText);
 
 		wrapper.appendChild(medium);
@@ -263,8 +273,37 @@ Module.register("MMM-VigilanceMeteoFrance", {
 
 			wrapper.appendChild(risks);
 		}
+		
+		if(this.config.showForecast) {
+		    var forecastTitle = document.createElement("div");
+		    forecastTitle.className = "dimmed light xsmall title";
+            forecastTitle.innerHTML = "Demain :";
+            
+		    wrapper.appendChild(forecastTitle);
+		
+		    var medium = document.createElement("div");
+		    medium.className = "normal medium level";
 
-		return wrapper;
+		    var weatherIcon = document.createElement('span');
+
+		    weatherIcon.className = "fas fa-exclamation-circle dimmed";
+		    if(this.config.useColorLegend) {
+			    weatherIcon.style = "color: " + this.level2color(this.vigiWeatherLevelJ) + ";";
+		    }
+		    medium.appendChild(weatherIcon);
+
+		    var spacer = document.createElement("span");
+		    spacer.innerHTML = "&nbsp;";
+		    medium.appendChild(spacer);
+
+		    var weatherText = document.createElement("span");
+		    weatherText.innerHTML = " " + this.level2title(this.vigiWeatherLevelJ);
+		    medium.appendChild(weatherText);
+
+		    wrapper.appendChild(medium);
+            }
+
+		    return wrapper;
 	},
 
 	// Request new data from meteofrance.fr with node_helper
@@ -295,57 +334,36 @@ Module.register("MMM-VigilanceMeteoFrance", {
 
 	// Use the received data to set the various values before update DOM
 	processVigi: function(data) {
-		if(!data || data.department != this.config.department || !data.level || typeof data.risks === "undefined") {
+		if(!data || data.department != this.config.department || !data.levelJ || typeof data.risks === "undefined") {
 			Log.error(this.name + ": Do not receive usable data.");
 			return;
 		}
-
-		this.vigiWeatherLevel = data.level;
+		
+		this.vigiWeatherLevelJ = data.levelJ;
+		this.vigiWeatherLevelJ1 = data.levelJ1;
 
 		if(this.config.hideGreenLevel) {
-			if(data.level == 1) {
+			if(data.levelJ == 1) {
 				this.hide();
 			} else {
 				this.show();
 			}
 		}
 
-		switch(data.level) {
-			case 1:
-				this.vigiWeatherTitle = "Vigilance verte";
-				this.vigiWeatherDescription = "Pas de vigilance particulière.";
-				this.vigiWeatherColor = "vert";
-				break;
-			case 2:
-				this.vigiWeatherTitle = "Vigilance jaune";
-				this.vigiWeatherDescription = "Soyer attentifsi vous pratiquez des activités sensibles au risque météorologique.";
-				this.vigiWeatherColor = "jaune";
-				break;
-			case 3:
-				this.vigiWeatherTitle = "Vigilance orange";
-				this.vigiWeatherDescription = "Soyez très vigilant, des phénomènes dangereux sont prévus.";
-				this.vigiWeatherColor = "orange";
-				break;
-			case 4:
-				this.vigiWeatherTitle = "Vigilance rouge";
-				this.vigiWeatherDescription = "Une vigilance absolue s'impose, des phénomènes dangereux d'intensité exceptionnelle sont prévus.";
-				this.vigiWeatherColor = "rouge";
-				break;
-		}
-
 		if(this.config.showNotification) {
-			if(!this.loaded && data.level >= 2) {
-				this.notifyVigi("Attention, votre <strong>département</strong> est placé en <strong>vigilance " + this.vigiWeatherColor + "</strong> !");
+			if(!this.loaded && data.levelJ >= 2) {
+				this.notifyVigi("Attention, votre <strong>département</strong> est placé en <strong>" + this.level2title(data.levelJ).toLowerCase() + "</strong> !");
 			}
-			if(this.loaded && data.level > this.lastData.level) {
+			if(this.loaded && data.levelJ > this.lastdata.levelJ) {
 				this.notifyVigi("Attention, le <strong>niveau de vigilance</strong> augmente dans <strong>votre département</strong> !");
 			}
-			if(this.loaded && data.level < this.lastData.level) {
+			if(this.loaded && data.levelJ < this.lastdata.levelJ) {
 				this.notifyVigi("Bonne nouvelle, le <strong>niveau de vigilance</strong> diminue dans <strong>votre département</strong> !");
 			}
 		}
 
 		this.vigiWeatherCurrentRisks = data.risks.filter(item => moment().isBetween(moment(item.begin), moment(item.end)));
+		this.vigiWeatherFutureRisks = data.risks.filter(item => moment().isBefore(moment(item.begin)));
 
 		if(this.loaded && this.config.showNotification) {
 			var self = this;
@@ -460,6 +478,42 @@ Module.register("MMM-VigilanceMeteoFrance", {
 				break;
 			case 4:
 				return "#b30000";
+				break;
+		}
+	},
+	
+	// Convert vigilance's level to title
+	level2title: function(level) {
+		switch(level) {
+			case 1:
+				return "Vigilance verte";
+				break;
+			case 2:
+				return "Vigilance jaune";
+				break;
+			case 3:
+				return "Vigilance orange";
+				break;
+			case 4:
+				return "Vigilance rouge";
+				break;
+		}
+	},
+	
+	// Convert vigilance's level to description
+	level2description: function(level) {
+		switch(level) {
+			case 1:
+				return "Pas de vigilance particulière.";
+				break;
+			case 2:
+				return "Soyer attentif si vous pratiquez des activités sensibles au risque météorologique.";
+				break;
+			case 3:
+				return "Soyez très vigilant, des phénomènes dangereux sont prévus.";
+				break;
+			case 4:
+				return "Une vigilance absolue s'impose, des phénomènes dangereux d'intensité exceptionnelle sont prévus.";
 				break;
 		}
 	},
