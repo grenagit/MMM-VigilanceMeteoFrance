@@ -22,59 +22,63 @@ module.exports = NodeHelper.create({
 		let apiTokenBase64 = Buffer.from(self.config.apiConsumerKey + ':' + self.config.apiConsumerSecret, 'utf8').toString('base64');
 
 		axios({
-			url: self.config.oauthEndpoint,
-			data: {'grant_type': 'client_credentials'},
-			headers: {
-				'Authorization': 'Basic ' + apiTokenBase64,
-				'Content-Type': 'application/x-www-form-urlencoded',
-				'Accept': 'application/json'
-			},
-			method: 'post'
-		})
-		.then(function(response) {
-			if(response.status == 200 && response.data) {
-				// Get vigilance data
-				axios({
-					url: self.config.vigiEndpoint, 
-					headers: {'Authorization': 'Bearer ' + response.data.access_token},
-					method: 'get'
-				})
-				.then(function(response) {
-					if(response.status == 200 && response.data) {
-						self.formatData(response.data);
-					} else {
-						self.sendSocketNotification("ERROR", 'MeteoFrance Vigilance error: ' + response.statusText);
-					}
-				})
-				.catch(function(error) {
-					self.sendSocketNotification("ERROR", 'MeteoFrance Vigilance error: ' + error.message);
-				});
-			} else {
-				self.sendSocketNotification("ERROR", 'MeteoFrance Oauth2 error: ' + response.statusText);
-			}
-		})
-		.catch(function(error) {
-			self.sendSocketNotification("ERROR", 'MeteoFrance Oauth2 error: ' + error.message);
-		});
+				url: self.config.oauthEndpoint,
+				data: {
+					'grant_type': 'client_credentials'
+				},
+				headers: {
+					'Authorization': 'Basic ' + apiTokenBase64,
+					'Content-Type': 'application/x-www-form-urlencoded',
+					'Accept': 'application/json'
+				},
+				method: 'post'
+			})
+			.then(function(response) {
+				if(response.status == 200 && response.data) {
+					// Get vigilance data
+					axios({
+							url: self.config.vigiEndpoint,
+							headers: {
+								'Authorization': 'Bearer ' + response.data.access_token
+							},
+							method: 'get'
+						})
+						.then(function(response) {
+							if(response.status == 200 && response.data) {
+								self.formatData(response.data);
+							} else {
+								self.sendSocketNotification("ERROR", 'MeteoFrance Vigilance error: ' + response.statusText);
+							}
+						})
+						.catch(function(error) {
+							self.sendSocketNotification("ERROR", 'MeteoFrance Vigilance error: ' + error.message);
+						});
+				} else {
+					self.sendSocketNotification("ERROR", 'MeteoFrance Oauth2 error: ' + response.statusText);
+				}
+			})
+			.catch(function(error) {
+				self.sendSocketNotification("ERROR", 'MeteoFrance Oauth2 error: ' + error.message);
+			});
 	},
 
-	formatData: function(data) { 
+	formatData: function(data) {
 		var self = this;
 
 		let departmentDataJ = data.product.periods[0].timelaps.domain_ids.filter(item => item.domain_id == self.config.department)[0];
 		let departmentDataJ1 = data.product.periods[1].timelaps.domain_ids.filter(item => item.domain_id == self.config.department)[0];
-		
+
 		let risks = [];
 		let levelJ = departmentDataJ.max_color_id;
 		let levelJ1 = departmentDataJ1.max_color_id;
-		
+
 		let phenomenonData = departmentDataJ.phenomenon_items.concat(departmentDataJ1.phenomenon_items);
 
 		for(let i = 0; i < phenomenonData.length; i++) {
 			if(!self.config.excludedRisks.includes(parseInt(phenomenonData[i].phenomenon_id)) && phenomenonData[i].phenomenon_max_color_id > 1) {
-			
+
 				let timelapsData = phenomenonData[i].timelaps_items;
-			
+
 				for(let j = 0; j < timelapsData.length; j++) {
 					risks.push({
 						"id": parseInt(phenomenonData[i].phenomenon_id),

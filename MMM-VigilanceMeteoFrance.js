@@ -151,7 +151,7 @@ Module.register("MMM-VigilanceMeteoFrance", {
 	// Define start sequence
 	start: function() {
 		Log.info("Starting module: " + this.name);
-		
+
 		moment.updateLocale(config.language);
 
 		this.vigiWeatherLevelJ = null;
@@ -200,15 +200,15 @@ Module.register("MMM-VigilanceMeteoFrance", {
 
 			wrapper.appendChild(weatherDepartment);
 		}
-		
+
 		if(this.config.showForecast) {
-		    var weatherTitle = document.createElement("div");
-		    weatherTitle.className = "dimmed light xsmall title";
-		    
-            weatherTitle.innerHTML = "Aujourd'hui :";
-            
-		    wrapper.appendChild(weatherTitle);
-	    }
+			var weatherTitle = document.createElement("div");
+			weatherTitle.className = "dimmed light xsmall title";
+
+			weatherTitle.innerHTML = "Aujourd'hui :";
+
+			wrapper.appendChild(weatherTitle);
+		}
 
 		var medium = document.createElement("div");
 		medium.className = "normal medium level";
@@ -273,37 +273,37 @@ Module.register("MMM-VigilanceMeteoFrance", {
 
 			wrapper.appendChild(risks);
 		}
-		
+
 		if(this.config.showForecast) {
-		    var forecastTitle = document.createElement("div");
-		    forecastTitle.className = "dimmed light xsmall title";
-            forecastTitle.innerHTML = "Demain :";
-            
-		    wrapper.appendChild(forecastTitle);
-		
-		    var medium = document.createElement("div");
-		    medium.className = "normal medium level";
+			var forecastTitle = document.createElement("div");
+			forecastTitle.className = "dimmed light xsmall title";
+			forecastTitle.innerHTML = "Demain :";
 
-		    var weatherIcon = document.createElement('span');
+			wrapper.appendChild(forecastTitle);
 
-		    weatherIcon.className = "fas fa-exclamation-circle dimmed";
-		    if(this.config.useColorLegend) {
-			    weatherIcon.style = "color: " + this.level2color(this.vigiWeatherLevelJ) + ";";
-		    }
-		    medium.appendChild(weatherIcon);
+			var medium = document.createElement("div");
+			medium.className = "normal medium level";
 
-		    var spacer = document.createElement("span");
-		    spacer.innerHTML = "&nbsp;";
-		    medium.appendChild(spacer);
+			var weatherIcon = document.createElement('span');
 
-		    var weatherText = document.createElement("span");
-		    weatherText.innerHTML = " " + this.level2title(this.vigiWeatherLevelJ);
-		    medium.appendChild(weatherText);
+			weatherIcon.className = "fas fa-exclamation-circle dimmed";
+			if(this.config.useColorLegend) {
+				weatherIcon.style = "color: " + this.level2color(this.vigiWeatherLevelJ) + ";";
+			}
+			medium.appendChild(weatherIcon);
 
-		    wrapper.appendChild(medium);
-            }
+			var spacer = document.createElement("span");
+			spacer.innerHTML = "&nbsp;";
+			medium.appendChild(spacer);
 
-		    return wrapper;
+			var weatherText = document.createElement("span");
+			weatherText.innerHTML = " " + this.level2title(this.vigiWeatherLevelJ);
+			medium.appendChild(weatherText);
+
+			wrapper.appendChild(medium);
+		}
+
+		return wrapper;
 	},
 
 	// Request new data from meteofrance.fr with node_helper
@@ -338,7 +338,7 @@ Module.register("MMM-VigilanceMeteoFrance", {
 			Log.error(this.name + ": Do not receive usable data.");
 			return;
 		}
-		
+
 		this.vigiWeatherLevelJ = data.levelJ;
 		this.vigiWeatherLevelJ1 = data.levelJ1;
 
@@ -397,13 +397,13 @@ Module.register("MMM-VigilanceMeteoFrance", {
 			self.sendSocketNotification('CONFIG', self.config);
 		}, nextLoad);
 	},
-	
+
 	// Convert risk's id to legend
 	risk2legend: function(id) {
 		switch(id) {
 			case 1:
 				return "Vent";
-			break;
+				break;
 			case 2:
 				return "Pluie-Inondation";
 				break;
@@ -430,13 +430,13 @@ Module.register("MMM-VigilanceMeteoFrance", {
 				break;
 		}
 	},
-	
+
 	// Convert risk's id to icon
 	risk2icon: function(id) {
 		switch(id) {
 			case 1:
 				return "wind";
-			break;
+				break;
 			case 2:
 				return "cloud-showers-heavy";
 				break;
@@ -481,7 +481,7 @@ Module.register("MMM-VigilanceMeteoFrance", {
 				break;
 		}
 	},
-	
+
 	// Convert vigilance's level to title
 	level2title: function(level) {
 		switch(level) {
@@ -499,7 +499,7 @@ Module.register("MMM-VigilanceMeteoFrance", {
 				break;
 		}
 	},
-	
+
 	// Convert vigilance's level to description
 	level2description: function(level) {
 		switch(level) {
