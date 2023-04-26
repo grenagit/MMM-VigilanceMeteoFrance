@@ -11,7 +11,7 @@ Description, Risk legend and Color Legend display may be enabled or disabled ind
 
 [MagicMirror Project on Github](https://github.com/MichMich/MagicMirror) | [Vigilance on Météo France](https://vigilance.meteofrance.fr) | [APIs on Météo France](https://portail-api.meteofrance.fr)
 
-⚠️ **MMM-VigilanceMeteoFrance 2.0** (January 2023) uses the **new vigilance API** (v1) from Météo France which provides more complete data. **Keys** are **now required** for the module to work! [More info here](https://portail-api.meteofrance.fr/devportal/services/aide)
+⚠️ **MMM-VigilanceMeteoFrance 2.0** (May 2023) uses the **new vigilance API** (v1) from Météo France which provides more complete data. **Keys** are **now required** for the module to work! [More info here](https://portail-api.meteofrance.fr/devportal/services/aide)
 
 ## Installation:
 
