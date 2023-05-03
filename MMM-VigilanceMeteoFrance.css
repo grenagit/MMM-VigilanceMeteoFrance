@@ -1,5 +1,7 @@
 .MMM-VigilanceMeteoFrance .department,
 .MMM-VigilanceMeteoFrance .title,
-.MMM-VigilanceMeteoFrance .description {
+.MMM-VigilanceMeteoFrance .level,
+.MMM-VigilanceMeteoFrance .description,
+.MMM-VigilanceMeteoFrance .risks {
   padding-bottom: 10px;
 }
