@@ -70,9 +70,9 @@ module.exports = NodeHelper.create({
 
 		let risks = [];
 		let levels = [];
-		
+
 		let periodsData = data.product.periods;
-		
+
 		for(let i = 0; i < 2; i++) {
 		levels.push({
 				"id": periodsData[i].echeance,

@@ -338,7 +338,7 @@ Module.register("MMM-VigilanceMeteoFrance", {
 			Log.error(this.name + ": Do not receive usable data.");
 			return;
 		}
-        
+
 		this.vigiWeatherCurrentLevel = data.levels.find(item => moment().isBetween(moment(item.begin), moment(item.end))).level;
 
 		let futureLevelData = data.levels.find(item => moment().isBefore(moment(item.begin)));
@@ -388,8 +388,8 @@ Module.register("MMM-VigilanceMeteoFrance", {
 
 		this.loaded = true;
 		this.lastData = {
-		    "risks": this.vigiWeatherCurrentRisks,
-		    "level": this.vigiWeatherCurrentLevel
+			"risks": this.vigiWeatherCurrentRisks,
+			"level": this.vigiWeatherCurrentLevel
 		};
 		this.updateDom(this.config.animationSpeed);
 		this.scheduleUpdate();
@@ -528,7 +528,7 @@ Module.register("MMM-VigilanceMeteoFrance", {
 		}
 	},
 
-	// Send notification 
+	// Send notification
 	notifyVigi: function(text) {
 		this.sendNotification("SHOW_ALERT", {
 			type: "notification",
