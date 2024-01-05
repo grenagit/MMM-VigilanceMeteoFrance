@@ -12,7 +12,7 @@ Module.register("MMM-VigilanceMeteoFrance", {
 
 	// Default module config
 	defaults: {
-	    appid: "",
+		appid: "",
 		department: 0,
 		excludedRisks: [],
 		updateInterval: 1 * 60 * 60 * 1000, // every 1 hour

@@ -93,7 +93,7 @@ module.exports = NodeHelper.create({
 	formatRisks: function(phenomenonData, periodData) {
 		var self = this;
 		let risks = [];
-   
+
 		for(let i = 0; i < phenomenonData.length; i++) {
 			if(!self.config.excludedRisks.includes(parseInt(phenomenonData[i].phenomenon_id)) && phenomenonData[i].phenomenon_max_color_id > 1) {
 				let timelapsData = phenomenonData[i].timelaps_items;
