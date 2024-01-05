@@ -12,8 +12,7 @@ Module.register("MMM-VigilanceMeteoFrance", {
 
 	// Default module config
 	defaults: {
-		apiConsumerKey: "",
-		apiConsumerSecret: "",
+	    appid: "",
 		department: 0,
 		excludedRisks: [],
 		updateInterval: 1 * 60 * 60 * 1000, // every 1 hour
@@ -174,8 +173,14 @@ Module.register("MMM-VigilanceMeteoFrance", {
 			wrapper.style = "max-width: " + this.config.maxTextWidth + "px;";
 		}
 
-		if(this.config.apiConsumerKey === "" || this.config.apiConsumerSecret === "") {
-			wrapper.innerHTML = "Please set the correct <i>apiConsumerKey</i> and <i>apiConsumerSecret</i> in the config for module: " + this.name + ".";
+		if(typeof this.config.apiConsumerKey !== 'undefined' || typeof this.config.apiConsumerSecret !== 'undefined') {
+			wrapper.innerHTML = "Please delete old MeteoFrance <i>keys</i> in the config for module: " + this.name + ".";
+			wrapper.className = "dimmed light small";
+			return wrapper;
+		}
+		
+		if(!this.config.appid) {
+			wrapper.innerHTML = "Please set the correct MeteoFrance <i>appid</i> in the config for module: " + this.name + ".";
 			wrapper.className = "dimmed light small";
 			return wrapper;
 		}

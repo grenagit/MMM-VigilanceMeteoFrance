@@ -11,7 +11,7 @@ Description, Risk legend and Color Legend display may be enabled or disabled ind
 
 [MagicMirror Project on Github](https://github.com/MichMich/MagicMirror) | [Vigilance on Météo France](https://vigilance.meteofrance.fr) | [APIs on Météo France](https://portail-api.meteofrance.fr)
 
-⚠️ **MMM-VigilanceMeteoFrance 2.0** (May 2023) uses the **new vigilance API** (v1) from Météo France which provides more complete data. **Keys** are **now required** for the module to work! [More info here](https://portail-api.meteofrance.fr/authenticationendpoint/aide.do)
+⚠️ **MMM-VigilanceMeteoFrance 2.2** (January 2024) uses the **simplified authentication system** from Météo France. A **single Application ID** is **now required** instead of **2 keys** for the module to work, please **update your conifguration**! [More info below](#appid)
 
 ## Installation:
 
@@ -65,17 +65,25 @@ modules: [
 		module: "MMM-VigilanceMeteoFrance",
 		position: "top_left",
 		config: {
-			apiConsumerKey: "abcde12345abcde12345abcde123", // Vigilance API Consumer Key
-			apiConsumerSecret: "abcde12345abcde12345abcde123", // Vigilance API Consumer Secret
+			appid: "WkU5X0NvWDRKODJ2THE0OUw1b2FyVEN0OFdZYTpla3hQb1ZqMmRQaXJ3c0pYcnNzRUFZM1kxUnNh", // Météo France Application ID
 			department: 75, // Department number
 		}
 	}
 ]
 ```
 
-You can use these special keys for your tests, but it has much lower rate limits!
-- API Consumer Key: `ZE9_CoX4J82vLq49L5oarTCt8WYa`
-- API Consumer Secret: `ekxPoVj2dPirwsJXrssEAY3Y1Rsa`
+### <a name="appid"></a>Application ID
+
+You can use this appid, but the limitation of 60 requests/minute is shared with all users: `WkU5X0NvWDRKODJ2THE0OUw1b2FyVEN0OFdZYTpla3hQb1ZqMmRQaXJ3c0pYcnNzRUFZM1kxUnNh`
+
+It's therefore recommended to use your own appid! To obtain this, please follow these steps:
+- [Log in](https://portail-api.meteofrance.fr/web/) or [create an account](https://portail-api.meteofrance.fr/web/) on the Météo France API portal
+- [Subscribe](https://portail-api.meteofrance.fr/web/fr/api/DonneesPubliquesVigilance) to Vigilance API
+- Go to `Générer Token` tab: User icon (top right) > `Mes API` > Choose an api > `Générer Token`
+- Check that `OAuth2` is selected (default choice)
+- Extract `YOUR_OWN_APP_ID` from curl's command: `curl -k -X POST https://portail-api.meteofrance.fr/token -d "grant_type=client_credentials" -H "Authorization: Basic YOUR_OWN_APP_ID"`
+
+[More info here](https://portail-api.meteofrance.fr/web/fr/faq)
 
 ### Options
 
@@ -84,8 +92,7 @@ The following properties can be configured:
 
 | Option                       | Description
 | ---------------------------- | -----------
-| `apiConsumerKey`             | The [Vigilance](https://portail-api.meteofrance.fr/devportal/apis/ed0ad072-a309-4d13-b518-df4e9f8dbbea/overview) API Consumer Key (Oauth2), which can be obtained by [subscribing](https://portail-api.meteofrance.fr/devportal/apis/ed0ad072-a309-4d13-b518-df4e9f8dbbea/overview) on Météo France API portal in the `OAuth2 Tokens` tab of [your application](https://portail-api.meteofrance.fr/devportal/applications/). It's free! <br><br>  This value is **REQUIRED**
-| `apiConsumerSecret`          | The [Vigilance](https://portail-api.meteofrance.fr/devportal/apis/ed0ad072-a309-4d13-b518-df4e9f8dbbea/overview) API Consumer Secret (Oauth2), which can be obtained by [subscribing](https://portail-api.meteofrance.fr/devportal/apis/ed0ad072-a309-4d13-b518-df4e9f8dbbea/overview) on Météo France API portal in the `OAuth2 Tokens` tab of [your application](https://portail-api.meteofrance.fr/devportal/applications/). It's free! <br><br>  This value is **REQUIRED**
+| `appid`                      | The [Météo France](https://portail-api.meteofrance.fr) Application ID, which can be obtained by [following the steps above](#appid). It's free! <br><br>  This value is **REQUIRED**
 | `department`                 | The department number (metropolitan france only). <br><br>  This value is **REQUIRED**
 | `excludedRisks`              | The table of excluded risks (see below for the identifiers to be used).<br><br> **Use with caution (some risks that may be important will not be displayed)** <br> **Default value:** `[]` (any)
 | `updateInterval`             | How often does the content needs to be fetched? (Milliseconds) <br><br> **Possible values:** `1000` - `86400000` <br> **Default value:** `1 * 60 * 60 * 1000` (1 hour)
@@ -101,9 +108,8 @@ The following properties can be configured:
 | `hideGreenLevel`             | Hide module when vigilance level is green. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `false`
 | `useColorLegend`             | Use the colored icons. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `true`
 | `initialLoadDelay`           | The initial delay before loading. If you have multiple modules that use the same API key, you might want to delay one of the requests. (Milliseconds) <br><br> **Possible values:** `1000` - `5000` <br> **Default value:**  `0`
-| `retryDelay`                 | The delay before retrying after a request failure. (Milliseconds) <br><br> **Possible values:** `1000` - `60000` <br> **Default value:**  `2500`
-| `apiBase`                    | The Météo France API base URL. <br><br> **Default value:**  `'http://vigilance2019.weatherfrance.com/'`
-| `vigiEndpoint`               | The Vigilance API endPoint. <br><br> **Default value:**  `'data/NXFR33_LFPW_.xml'`
+| `oauthEndpoint`              | The Météo France Oauth2 endPoint. <br><br> **Default value:**  `'https://portail-api.meteofrance.fr/token'`
+| `vigiEndpoint`               | The Vigilance API endPoint. <br><br> **Default value:**  `'https://public-api.meteofrance.fr/public/DPVigilance/v1/cartevigilance/encours'`
 | `frenchDepartmentsTable`     | The conversion table to convert the department number to department name.
 
 Identifants used for risks in `excludedRisks`:

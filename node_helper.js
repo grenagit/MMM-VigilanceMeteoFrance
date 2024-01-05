@@ -19,16 +19,13 @@ module.exports = NodeHelper.create({
 		var self = this;
 
 		// Get Oauth2 token
-		let apiTokenBase64 = Buffer.from(self.config.apiConsumerKey + ':' + self.config.apiConsumerSecret, 'utf8').toString('base64');
-
 		axios({
 				url: self.config.oauthEndpoint,
 				data: {
 					'grant_type': 'client_credentials'
 				},
 				headers: {
-					'Authorization': 'Basic ' + apiTokenBase64,
-					'Content-Type': 'application/x-www-form-urlencoded',
+					'Authorization': 'Basic ' + self.config.appid,
 					'Accept': 'application/json'
 				},
 				method: 'post'
@@ -39,7 +36,8 @@ module.exports = NodeHelper.create({
 					axios({
 							url: self.config.vigiEndpoint,
 							headers: {
-								'Authorization': 'Bearer ' + response.data.access_token
+								'Authorization': 'Bearer ' + response.data.access_token,
+								'Accept': 'application/json'
 							},
 							method: 'get'
 						})
