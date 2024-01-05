@@ -63,16 +63,16 @@ module.exports = NodeHelper.create({
 	formatData: function(data) {
 		var self = this;
 
-		let departmentDataJ = data.product.periods[0].timelaps.domain_ids.filter(item => item.domain_id == self.config.department)[0];
-		let departmentDataJ1 = data.product.periods[1].timelaps.domain_ids.filter(item => item.domain_id == self.config.department)[0];
+		let periodsData = data.product.periods;
+
+		let departmentDataJ = periodsData[0].timelaps.domain_ids.filter(item => item.domain_id == self.config.department)[0];
+		let departmentDataJ1 = periodsData[1].timelaps.domain_ids.filter(item => item.domain_id == self.config.department)[0];
 
 		let risks = [];
 		let levels = [];
 
-		let periodsData = data.product.periods;
-
 		for(let i = 0; i < 2; i++) {
-		levels.push({
+			levels.push({
 				"id": periodsData[i].echeance,
 				"level": periodsData[i].timelaps.domain_ids.filter(item => item.domain_id == self.config.department)[0].max_color_id,
 				"begin": periodsData[i].begin_validity_time,
@@ -80,24 +80,7 @@ module.exports = NodeHelper.create({
 			});
 		}
 
-		let phenomenonData = departmentDataJ.phenomenon_items.concat(departmentDataJ1.phenomenon_items);
-
-		for(let i = 0; i < phenomenonData.length; i++) {
-			if(!self.config.excludedRisks.includes(parseInt(phenomenonData[i].phenomenon_id)) && phenomenonData[i].phenomenon_max_color_id > 1) {
-
-				let timelapsData = phenomenonData[i].timelaps_items;
-
-				for(let j = 0; j < timelapsData.length; j++) {
-					risks.push({
-						"id": parseInt(phenomenonData[i].phenomenon_id),
-						"level": timelapsData[j].color_id,
-						"begin": timelapsData[j].begin_time,
-						"end": timelapsData[j].end_time
-					});
-				}
-			}
-		}
-
+		risks = self.formatRisks(departmentDataJ.phenomenon_items, periodsData[0]).concat(self.formatRisks(departmentDataJ1.phenomenon_items, periodsData[1]));
 		risks.sort((a, b) => Number(b.level) - Number(a.level));
 
 		self.sendSocketNotification("DATA", JSON.stringify({
@@ -105,6 +88,37 @@ module.exports = NodeHelper.create({
 			"levels": levels,
 			"risks": risks
 		}));
+	},
+
+	formatRisks: function(phenomenonData, periodData) {
+		var self = this;
+		let risks = [];
+   
+		for(let i = 0; i < phenomenonData.length; i++) {
+			if(!self.config.excludedRisks.includes(parseInt(phenomenonData[i].phenomenon_id)) && phenomenonData[i].phenomenon_max_color_id > 1) {
+				let timelapsData = phenomenonData[i].timelaps_items;
+
+				if(timelapsData.length > 0) {
+					for(let j = 0; j < timelapsData.length; j++) {
+						risks.push({
+							"id": parseInt(phenomenonData[i].phenomenon_id),
+							"level": timelapsData[j].color_id,
+							"begin": timelapsData[j].begin_time,
+							"end": timelapsData[j].end_time
+						});
+					}
+				} else {
+					risks.push({
+						"id": parseInt(phenomenonData[i].phenomenon_id),
+						"level": phenomenonData[i].phenomenon_max_color_id,
+						"begin": periodData.begin_validity_time,
+						"end": periodData.end_validity_time
+					});
+				}
+			}
+		}
+
+		return risks;
 	},
 
 	socketNotificationReceived: function(notification, payload) {
