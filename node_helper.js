@@ -75,6 +75,7 @@ module.exports = NodeHelper.create({
 			levels.push({
 				"id": periodsData[i].echeance,
 				"level": periodsData[i].timelaps.domain_ids.filter(item => item.domain_id == self.config.department)[0].max_color_id,
+				"text": periodsData[i].text_items.text.join(' '),
 				"begin": periodsData[i].begin_validity_time,
 				"end": periodsData[i].end_validity_time
 			});
