@@ -83,7 +83,7 @@ It's therefore recommended to use your own appid! To obtain this, please follow 
 - Check that `OAuth2` is selected (default choice)
 - Extract `YOUR_OWN_APP_ID` from curl's command: `curl -k -X POST https://portail-api.meteofrance.fr/token -d "grant_type=client_credentials" -H "Authorization: Basic YOUR_OWN_APP_ID"`
 
-[More info here](https://portail-api.meteofrance.fr/web/fr/faq)
+[Screenshot here](APIPortalMeteoFrance_appid.png) and [More info here](https://portail-api.meteofrance.fr/web/fr/faq)
 
 ### Options
 
