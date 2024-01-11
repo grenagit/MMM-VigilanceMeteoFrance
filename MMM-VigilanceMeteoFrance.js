@@ -12,8 +12,7 @@ Module.register("MMM-VigilanceMeteoFrance", {
 
 	// Default module config
 	defaults: {
-		apiConsumerKey: "",
-		apiConsumerSecret: "",
+		appid: "",
 		department: 0,
 		excludedRisks: [],
 		updateInterval: 1 * 60 * 60 * 1000, // every 1 hour
@@ -155,6 +154,7 @@ Module.register("MMM-VigilanceMeteoFrance", {
 		moment.updateLocale(config.language);
 
 		this.vigiWeatherCurrentLevel = null;
+		this.vigiWeatherCurrentDescription = null;
 		this.vigiWeatherFutureLevel = null;
 		this.vigiWeatherCurrentRisks = [];
 		this.vigiWeatherFutureRisks = [];
@@ -174,8 +174,14 @@ Module.register("MMM-VigilanceMeteoFrance", {
 			wrapper.style = "max-width: " + this.config.maxTextWidth + "px;";
 		}
 
-		if(this.config.apiConsumerKey === "" || this.config.apiConsumerSecret === "") {
-			wrapper.innerHTML = "Please set the correct <i>apiConsumerKey</i> and <i>apiConsumerSecret</i> in the config for module: " + this.name + ".";
+		if(typeof this.config.apiConsumerKey !== 'undefined' || typeof this.config.apiConsumerSecret !== 'undefined') {
+			wrapper.innerHTML = "Please delete old MeteoFrance <i>keys</i> in the config for module: " + this.name + ".";
+			wrapper.className = "dimmed light small";
+			return wrapper;
+		}
+		
+		if(!this.config.appid) {
+			wrapper.innerHTML = "Please set the correct MeteoFrance <i>appid</i> in the config for module: " + this.name + ".";
 			wrapper.className = "dimmed light small";
 			return wrapper;
 		}
@@ -235,7 +241,7 @@ Module.register("MMM-VigilanceMeteoFrance", {
 			var weatherDescription = document.createElement('div');
 			weatherDescription.className = "light small description";
 
-			weatherDescription.innerHTML = this.vigiWeatherDescription;
+			weatherDescription.innerHTML = this.vigiWeatherCurrentDescription;
 
 			wrapper.appendChild(weatherDescription);
 		}
@@ -340,6 +346,7 @@ Module.register("MMM-VigilanceMeteoFrance", {
 		}
 
 		this.vigiWeatherCurrentLevel = data.levels.find(item => moment().isBetween(moment(item.begin), moment(item.end))).level;
+		this.vigiWeatherCurrentDescription = data.levels.find(item => moment().isBetween(moment(item.begin), moment(item.end))).text;
 
 		let futureLevelData = data.levels.find(item => moment().isBefore(moment(item.begin)));
 		if(typeof futureLevelData !== "undefined") {
@@ -506,24 +513,6 @@ Module.register("MMM-VigilanceMeteoFrance", {
 				break;
 			case 4:
 				return "Vigilance rouge";
-				break;
-		}
-	},
-
-	// Convert vigilance's level to description
-	level2description: function(level) {
-		switch(level) {
-			case 1:
-				return "Pas de vigilance particulière.";
-				break;
-			case 2:
-				return "Soyer attentif si vous pratiquez des activités sensibles au risque météorologique.";
-				break;
-			case 3:
-				return "Soyez très vigilant, des phénomènes dangereux sont prévus.";
-				break;
-			case 4:
-				return "Une vigilance absolue s'impose, des phénomènes dangereux d'intensité exceptionnelle sont prévus.";
 				break;
 		}
 	},
