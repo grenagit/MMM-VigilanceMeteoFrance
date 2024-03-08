@@ -101,12 +101,14 @@ module.exports = NodeHelper.create({
 
 				if(timelapsData.length > 0) {
 					for(let j = 0; j < timelapsData.length; j++) {
-						risks.push({
-							"id": parseInt(phenomenonData[i].phenomenon_id),
-							"level": timelapsData[j].color_id,
-							"begin": timelapsData[j].begin_time,
-							"end": timelapsData[j].end_time
-						});
+						if(timelapsData[j].color_id > 1) {
+							risks.push({
+								"id": parseInt(phenomenonData[i].phenomenon_id),
+								"level": timelapsData[j].color_id,
+								"begin": timelapsData[j].begin_time,
+								"end": timelapsData[j].end_time
+							});
+						}
 					}
 				} else {
 					risks.push({
