@@ -9,11 +9,11 @@ Description, Risk legend and Color Legend display may be enabled or disabled ind
 <img alt="MMM-VigilanceMeteoFrance Screenshot #3" src="MMM-VigilanceMeteoFrance_screenshot3.png" align="top" height="97px">
 </p>
 
-[MagicMirror Project on Github](https://github.com/MichMich/MagicMirror) | [Vigilance on Météo France](https://vigilance.meteofrance.fr) | [APIs on Météo France](https://portail-api.meteofrance.fr)
+[MagicMirror² Project on Github](https://github.com/MagicMirrorOrg/MagicMirror) | [Vigilance on Météo France](https://vigilance.meteofrance.fr) | [APIs on Météo France](https://portail-api.meteofrance.fr)
 
 ⚠️ **MMM-VigilanceMeteoFrance 2.2** (January 2024) uses the **simplified authentication system** from Météo France. A **single Application ID** is **now required** instead of **2 keys** for the module to work, please **update your conifguration**! [More info below](#appid)
 
-## Installation:
+## Installation
 
 In your terminal, go to your MagicMirror's Module folder:
 ```shell
@@ -37,7 +37,7 @@ npm install
 
 Configure the module in your config.js file.
 
-## Update:
+## Update
 
 In your terminal, go to your MMM-VigilanceMeteoFrance's Module folder:
 ```shell
@@ -54,7 +54,7 @@ Install dependencies:
 npm install
 ```
 
-## Configuration:
+## Configuration
 
 ### Basic configuration
 
@@ -88,7 +88,6 @@ It's therefore recommended to use your own appid! To obtain this, please follow 
 ### Options
 
 The following properties can be configured:
-
 
 | Option                       | Description
 | ---------------------------- | -----------
@@ -133,7 +132,7 @@ Identifants used for risks in `excludedRisks`:
 
 ### Integration with other modules
 
-The following [notifications](https://github.com/MichMich/MagicMirror/wiki/notifications) can be used by other modules:
+The following [notifications](https://docs.magicmirror.builders/development/notifications.html) can be used by other modules:
 
 | Action                          | Notification                | Payload
 | ------------------------------- | --------------------------- | -------
@@ -141,7 +140,7 @@ The following [notifications](https://github.com/MichMich/MagicMirror/wiki/notif
 
 For example, use `this.sendNotification("VIGI_METEOFRANCE_DEPARTMENT", 75);` if you want to change department number so that it corresponds to that of Paris (75).
 
-## Todo:
+## Todo
 
 - [x] Hide, if you want, the module when vigilance level is green.
 - [x] Display, if you want, the department name.
@@ -149,7 +148,7 @@ For example, use `this.sendNotification("VIGI_METEOFRANCE_DEPARTMENT", 75);` if 
 - [x] Display an notification at the start of the MagicMirror in case of vigilance level 2 to 4.
 - [x] Display an notification in case of new risk.
 
-## Testing:
+## Testing
 
 To test the new features, you can use the testing branch:
 
@@ -157,6 +156,6 @@ To test the new features, you can use the testing branch:
 - Return to master version from testing version: `git checkout master`
 - Check the version used: `git branch -v`
 
-## License:
+## License
 
 This module is licensed under the MIT License

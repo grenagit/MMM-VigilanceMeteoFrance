@@ -1,7 +1,7 @@
-/* Magic Mirror
+/* MagicMirror²
  * Module: MMM-VigilanceMeteoFrance
  *
- * Magic Mirror By Michael Teeuw https://magicmirror.builders
+ * MagicMirror² By Michael Teeuw https://magicmirror.builders
  * MIT Licensed.
  *
  * Module MMM-VigilanceMeteoFrance By Grena https://github.com/grenagit
